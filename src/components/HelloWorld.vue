@@ -6,11 +6,8 @@
 </style>
 <template>
   <div class="hello">
-    <ol>
-      <li v-for="n in 10" v-bind:key="n">
-        {{ n }}
-      </li>
-    </ol>
+    <p>原始字符串: {{ message }}</p>
+    <p>计算后反转字符串: {{ reversedMessage }}</p>
   </div>
 </template>
 
@@ -19,16 +16,14 @@
     name: 'hello',
     data () {
       return {
-        sites: [
-          {name: 'Runoob'},
-          {name: 'Google'},
-          {name: 'Taobao'}
-        ],
-        object: {
-          name: '菜鸟教程',
-          url: 'http://www.runoob.com',
-          slogan: '学的不仅是技术，更是梦想！'
-        }
+        message: 'xiaohuasheng'
+      }
+    },
+    computed: {
+      // 计算属性的 getter
+      reversedMessage: function () {
+        // `this` 指向 vm 实例
+        return this.message.split('').reverse().join('')
       }
     }
   }
