@@ -7,7 +7,7 @@
 <template>
   <div class="hello">
     <p>{{ message }}</p>
-    <input v-model="message">
+    <button v-on:click="reverseMessage">反转字符串</button>
   </div>
 </template>
 
@@ -17,6 +17,11 @@
     data () {
       return {
         message: '欢迎来到菜鸟教程！'
+      }
+    },
+    methods: {
+      reverseMessage: function () {
+        this.message = this.message.split('').reverse().join('')
       }
     }
   }
