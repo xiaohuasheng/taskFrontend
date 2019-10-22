@@ -6,7 +6,12 @@
 </style>
 <template>
   <div class="hello">
-    {{ message | capitalize }}
+    <div v-if="Math.random() > 0.5">
+      Sorry
+    </div>
+    <div v-else>
+      Not sorry
+    </div>
   </div>
 </template>
 
