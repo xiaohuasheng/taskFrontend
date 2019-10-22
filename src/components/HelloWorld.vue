@@ -6,8 +6,8 @@
 </style>
 <template>
   <div class="hello">
-    <p>原始字符串: {{ message }}</p>
-    <p>计算后反转字符串: {{ reversedMessage }}</p>
+    <p style="font-size:25px;">计数器: {{ counter }}</p>
+    <button @click="counter++" style="font-size:25px;">点我</button>
   </div>
 </template>
 
@@ -16,14 +16,12 @@
     name: 'hello',
     data () {
       return {
-        message: 'xiaohuasheng'
+        counter: 1
       }
     },
-    computed: {
-      // 计算属性的 getter
-      reversedMessage: function () {
-        // `this` 指向 vm 实例
-        return this.message.split('').reverse().join('')
+    watch: {
+      counter: function (nval, oval) {
+        alert('计数器值的变化 :' + oval + ' 变为 ' + nval + '!')
       }
     }
   }
