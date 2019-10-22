@@ -6,7 +6,7 @@
 </style>
 <template>
   <div class="hello">
-    <p v-if="info">{{ info.message }}</p>
+    <p v-if="info">{{ info.username }}</p>
   </div>
 </template>
 
@@ -19,11 +19,18 @@
       }
     },
     mounted () {
-      this.axios.get('http://localhost:9999/ping')
-        .then(response => (this.info = response.data))
+      this.axios.post('http://192.168.3.97:9999/form', {
+        username: 'Fred',
+        password: 'Flintstone'
+      }).then(response => (this.info = response.data))
         .catch(function (error) { // 请求失败处理
           console.log(error)
         })
+    },
+    watch: {
+      info: function (newValue, oldValue) {
+        console.log(newValue)
+      }
     }
   }
 </script>
