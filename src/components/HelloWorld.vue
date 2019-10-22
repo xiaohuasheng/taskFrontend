@@ -6,8 +6,7 @@
 </style>
 <template>
   <div class="hello">
-    <p>{{ message }}</p>
-    <button v-on:click="reverseMessage">反转字符串</button>
+    {{ message | capitalize }}
   </div>
 </template>
 
@@ -16,12 +15,14 @@
     name: 'hello',
     data () {
       return {
-        message: '欢迎来到菜鸟教程！'
+        message: 'runoob'
       }
     },
-    methods: {
-      reverseMessage: function () {
-        this.message = this.message.split('').reverse().join('')
+    filters: {
+      capitalize: function (value) {
+        if (!value) return ''
+        value = value.toString()
+        return value.charAt(0).toUpperCase() + value.slice(1)
       }
     }
   }
