@@ -6,10 +6,7 @@
 </style>
 <template>
   <div class="hello">
-    {{5+5}}<br>
-    {{ ok ? 'YES' : 'NO' }}<br>
-    {{ message.split('').reverse().join('') }}
-    <div v-bind:id="'list-' + id">菜鸟教程</div>
+    <p v-if="ok">现在你看到我了</p>
   </div>
 </template>
 
