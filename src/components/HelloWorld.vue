@@ -6,8 +6,7 @@
 </style>
 <template>
   <div class="hello">
-    <p style="font-size:25px;">计数器: {{ counter }}</p>
-    <button @click="counter++" style="font-size:25px;">点我</button>
+    <p v-if="info">{{ info.message }}</p>
   </div>
 </template>
 
@@ -16,13 +15,15 @@
     name: 'hello',
     data () {
       return {
-        counter: 1
+        info: null
       }
     },
-    watch: {
-      counter: function (nval, oval) {
-        alert('计数器值的变化 :' + oval + ' 变为 ' + nval + '!')
-      }
+    mounted () {
+      this.axios.get('http://localhost:9999/ping')
+        .then(response => (this.info = response.data))
+        .catch(function (error) { // 请求失败处理
+          console.log(error)
+        })
     }
   }
 </script>
