@@ -6,12 +6,16 @@
 </style>
 <template>
   <div class="hello">
-    <div v-if="Math.random() > 0.5">
-      Sorry
-    </div>
-    <div v-else>
-      Not sorry
-    </div>
+    <ol>
+      <li v-for="site in sites" v-bind:key="site.name">
+        {{ site.name }}
+      </li>
+    </ol>
+    <ul>
+      <li v-for="(value, key, index) in object" v-bind:key="index">
+        {{ index }}. {{ key }} : {{ value }}
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -20,14 +24,16 @@
     name: 'hello',
     data () {
       return {
-        message: 'runoob'
-      }
-    },
-    filters: {
-      capitalize: function (value) {
-        if (!value) return ''
-        value = value.toString()
-        return value.charAt(0).toUpperCase() + value.slice(1)
+        sites: [
+          { name: 'Runoob' },
+          { name: 'Google' },
+          { name: 'Taobao' }
+        ],
+        object: {
+          name: '菜鸟教程',
+          url: 'http://www.runoob.com',
+          slogan: '学的不仅是技术，更是梦想！'
+        }
       }
     }
   }
