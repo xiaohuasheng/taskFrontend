@@ -1,5 +1,5 @@
 <style>
-  .class1{
+  .class1 {
     background: #444;
     color: #eee;
   }
@@ -7,15 +7,10 @@
 <template>
   <div class="hello">
     <ol>
-      <li v-for="site in sites" v-bind:key="site.name">
-        {{ site.name }}
+      <li v-for="n in 10" v-bind:key="n">
+        {{ n }}
       </li>
     </ol>
-    <ul>
-      <li v-for="(value, key, index) in object" v-bind:key="index">
-        {{ index }}. {{ key }} : {{ value }}
-      </li>
-    </ul>
   </div>
 </template>
 
@@ -25,9 +20,9 @@
     data () {
       return {
         sites: [
-          { name: 'Runoob' },
-          { name: 'Google' },
-          { name: 'Taobao' }
+          {name: 'Runoob'},
+          {name: 'Google'},
+          {name: 'Taobao'}
         ],
         object: {
           name: '菜鸟教程',
