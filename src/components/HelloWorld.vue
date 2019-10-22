@@ -6,7 +6,7 @@
 </style>
 <template>
   <div class="hello">
-    <p v-if="ok">现在你看到我了</p>
+    <pre><a v-bind:href="url">xhs</a></pre>
   </div>
 </template>
 
@@ -17,7 +17,8 @@
       return {
         message: '欢迎来到菜鸟教程！',
         ok: true,
-        id: 1
+        id: 1,
+        url: 'http://xiaohuasheng.cc'
       }
     }
   }
