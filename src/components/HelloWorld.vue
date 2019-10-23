@@ -1,23 +1,86 @@
-<template>
-  <div>
-    <div class="div1">
-      <vuedraggable class="wrapper" v-model="list" :options="{group:'people',}" @end="end">
-        <div v-for="item in list" :key="item" class="item">
-          <p>{{item}}</p>
-        </div>
-      </vuedraggable>
-    </div>
+<style>
+  .class1 {
+    background: #444;
+    color: #eee;
+  }
 
-    <div class="div2">
-      <vuedraggable class="wrapper" v-model="list2" :options="{group:'people',}">
-        <div v-for="item in list2" :key="item" class="item">
-          <p>{{item}}</p>
-        </div>
-      </vuedraggable>
-    </div>
-    <div class="div3">
-      <vuedraggable class="wrapper_09" v-model="list2" :options="{group:'people',}">
-        <div class="item">区域</div>
+  .row {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+
+  .block {
+    display: inline-block;
+    margin-right: 5px;
+  }
+
+  .row > .block:last-child {
+    border-left: 1px #444444 solid;
+  }
+
+  .a_table {
+    width: 98%;
+    margin: 0 auto;
+    height: auto;
+  }
+
+  .a_table td {
+    border: 1px solid #d6d6d6;
+  }
+
+  .a_table td div {
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #ffecec;
+  }
+</style>
+<template>
+  <div class="hello">
+    <table class="a_table">
+      <tr>
+        <td>
+          <div>
+            <vuedraggable class="wrapper" v-model="note2" :options="{group:'people',}" @end="end">
+              <div v-for="item in note2" :key="item.id" class="item">
+                <p>{{item.name}}</p>
+              </div>
+            </vuedraggable>
+          </div>
+        </td>
+        <td>
+          <div>
+            <vuedraggable class="wrapper" v-model="note1" :options="{group:'people',}" @end="end">
+              <div v-for="item in note1" :key="item.id" class="item">
+                <p>{{item.name}}</p>
+              </div>
+            </vuedraggable>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <div>
+            <vuedraggable class="wrapper" v-model="note3" :options="{group:'people',}" @end="end">
+              <div v-for="item in note3" :key="item.id" class="item">
+                <p>{{item.name}}</p>
+              </div>
+            </vuedraggable>
+          </div>
+        </td>
+        <td>
+          <div>
+            <vuedraggable class="wrapper" v-model="note4" :options="{group:'people',}" @end="end">
+              <div v-for="item in note4" :key="item.id" class="item">
+                <p>{{item.name}}</p>
+              </div>
+            </vuedraggable>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <div>
+      删除区域
+      <vuedraggable class="wrapper" v-model="trash" :options="{group:'people',}" @end="end">
       </vuedraggable>
     </div>
   </div>
@@ -28,17 +91,70 @@
 
   export default {
     components: {vuedraggable},
+    name: 'hello',
     data () {
       return {
-        list: ['苹果', '梨', '橙子'],
-        list2: ['火腿', '凉拌牛肉', '羊肉串']
+        info: null,
+        trash: [],
+        note1: [
+          {
+            id: 1,
+            name: 'boss迁OA'
+          },
+          {
+            id: 2,
+            name: '目标计划'
+          }
+        ],
+        note2: [
+          {
+            id: 3,
+            name: '学习mybatis'
+          },
+          {
+            id: 4,
+            name: '学习vue,go'
+          },
+          {
+            id: 5,
+            name: '跑步'
+          }
+        ],
+        note3: [
+          {
+            id: 6,
+            name: '玩游戏'
+          },
+          {
+            id: 7,
+            name: '弹琴'
+          }
+        ],
+        note4: [
+          {
+            id: 8,
+            name: '吃午饭'
+          },
+          {
+            id: 9,
+            name: '告警'
+          }
+        ]
       }
     },
-    updated () {
-      console.log('list:', this.list)
-      console.log('list2:', this.list2)
-    },
     mounted () {
+      // this.axios.post('http://192.168.3.97:9999/form', {
+      //   username: 'Fred',
+      //   password: 'Flintstone'
+      // }).then(response => (this.info = response.data))
+      //   .catch(function (error) { // 请求失败处理
+      //     console.log(error)
+      //   })
+    },
+    updated () {
+      console.log('note1', this.note1)
+      // console.log('list:', this.list)
+      // console.log('list2:', this.list2)
     },
     methods: {
       end (ev) {
@@ -47,44 +163,3 @@
     }
   }
 </script>
-
-<style scoped>
-  /* .wrapper {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-  } */
-  .wrap {
-    width: 100%;
-    height: 200px;
-  }
-  .item {
-    width: 300px;
-    height: 50px;
-    background-color: #42b983;
-    color: #ffffff;
-    margin-right: 10px;
-    float: left;
-    margin-top: 10px;
-  }
-  .div1 {
-    width: 100%;
-    height: 70px;
-    background: pink;
-  }
-  .sortable-ghost {
-    background: red;
-  }
-  .sortable-chosen {
-    background: #400040;
-  }
-  .div2 {
-    overflow: hidden;
-    margin-bottom: 20px;
-  }
-  .div3 {
-    width: 300px;
-    height: 300px;
-    background: yellowgreen;
-  }
-</style>
