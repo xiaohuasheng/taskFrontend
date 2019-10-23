@@ -1,138 +1,90 @@
-<style>
-  .class1 {
-    background: #444;
-    color: #eee;
-  }
-
-  .row {
-    width: 100%;
-    margin-bottom: 5px;
-  }
-
-  .block {
-    display: inline-block;
-    margin-right: 5px;
-  }
-
-  .row > .block:last-child {
-    border-left: 1px #444444 solid;
-  }
-
-  .a_table {
-    width: 98%;
-    margin: 0 auto;
-    height: auto;
-  }
-
-  .a_table td {
-    border: 1px solid #d6d6d6;
-  }
-
-  .a_table td div {
-    margin: 5px;
-    padding: 5px;
-    border: 1px solid #ffecec;
-  }
-</style>
 <template>
-  <div class="hello">
-    <table class="a_table">
-      <tr>
-        <td>
-          <div>
-            <div v-for="task in note2" v-bind:key="task.id">
-              {{ task.name }}
-            </div>
-          </div>
-        </td>
-        <td>
-          <div>
-            <div v-for="task in note1" v-bind:key="task.id">
-              {{ task.name }}
-            </div>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <div>
-            <div v-for="task in note3" v-bind:key="task.id">
-              {{ task.name }}
-            </div>
-          </div>
-        </td>
-        <td>
-          <div>
-            <div v-for="task in note4" v-bind:key="task.id">
-              {{ task.name }}
-            </div>
-          </div>
-        </td>
-      </tr>
-    </table>
+  <div>
+    <div class="div1">
+      <vuedraggable class="wrapper" v-model="list" :options="{group:'people',}" @end="end">
+        <div v-for="item in list" :key="item" class="item">
+          <p>{{item}}</p>
+        </div>
+      </vuedraggable>
+    </div>
+
+    <div class="div2">
+      <vuedraggable class="wrapper" v-model="list2" :options="{group:'people',}">
+        <div v-for="item in list2" :key="item" class="item">
+          <p>{{item}}</p>
+        </div>
+      </vuedraggable>
+    </div>
+    <div class="div3">
+      <vuedraggable class="wrapper_09" v-model="list2" :options="{group:'people',}">
+        <div class="item">区域</div>
+      </vuedraggable>
+    </div>
   </div>
 </template>
 
 <script>
+  import vuedraggable from 'vuedraggable'
+
   export default {
-    name: 'hello',
+    components: {vuedraggable},
     data () {
       return {
-        info: null,
-        note1: [
-          {
-            id: 1,
-            name: 'boss迁OA'
-          },
-          {
-            id: 2,
-            name: '目标计划'
-          }
-        ],
-        note2: [
-          {
-            id: 1,
-            name: '学习mybatis'
-          },
-          {
-            id: 2,
-            name: '学习vue,go'
-          },
-          {
-            id: 3,
-            name: '跑步'
-          }
-        ],
-        note3: [
-          {
-            id: 2,
-            name: '玩游戏'
-          },
-          {
-            id: 3,
-            name: '弹琴'
-          }
-        ],
-        note4: [
-          {
-            id: 1,
-            name: '吃午饭'
-          },
-          {
-            id: 2,
-            name: '告警'
-          }
-        ]
+        list: ['苹果', '梨', '橙子'],
+        list2: ['火腿', '凉拌牛肉', '羊肉串']
       }
     },
+    updated () {
+      console.log('list:', this.list)
+      console.log('list2:', this.list2)
+    },
     mounted () {
-      this.axios.post('http://192.168.3.97:9999/form', {
-        username: 'Fred',
-        password: 'Flintstone'
-      }).then(response => (this.info = response.data))
-        .catch(function (error) { // 请求失败处理
-          console.log(error)
-        })
+    },
+    methods: {
+      end (ev) {
+        console.log(ev.to.className)
+      }
     }
   }
 </script>
+
+<style scoped>
+  /* .wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  } */
+  .wrap {
+    width: 100%;
+    height: 200px;
+  }
+  .item {
+    width: 300px;
+    height: 50px;
+    background-color: #42b983;
+    color: #ffffff;
+    margin-right: 10px;
+    float: left;
+    margin-top: 10px;
+  }
+  .div1 {
+    width: 100%;
+    height: 70px;
+    background: pink;
+  }
+  .sortable-ghost {
+    background: red;
+  }
+  .sortable-chosen {
+    background: #400040;
+  }
+  .div2 {
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .div3 {
+    width: 300px;
+    height: 300px;
+    background: yellowgreen;
+  }
+</style>
