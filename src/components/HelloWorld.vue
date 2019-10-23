@@ -23,11 +23,28 @@
     margin: 0 auto;
     height: auto;
   }
+
+  .a_table td {
+    border: 1px solid #d6d6d6;
+  }
+
+  .a_table td div {
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #ffecec;
+  }
 </style>
 <template>
   <div class="hello">
-    <table border="1" class="a_table">
+    <table class="a_table">
       <tr>
+        <td>
+          <div>
+            <div v-for="task in note2" v-bind:key="task.id">
+              {{ task.name }}
+            </div>
+          </div>
+        </td>
         <td>
           <div>
             <div v-for="task in note1" v-bind:key="task.id">
@@ -35,11 +52,22 @@
             </div>
           </div>
         </td>
-        <td>row 1, cell 2</td>
       </tr>
       <tr>
-        <td>row 2, cell 1</td>
-        <td>row 2, cell 2</td>
+        <td>
+          <div>
+            <div v-for="task in note3" v-bind:key="task.id">
+              {{ task.name }}
+            </div>
+          </div>
+        </td>
+        <td>
+          <div>
+            <div v-for="task in note4" v-bind:key="task.id">
+              {{ task.name }}
+            </div>
+          </div>
+        </td>
       </tr>
     </table>
   </div>
@@ -54,24 +82,47 @@
         note1: [
           {
             id: 1,
-            name: '吃饭'
+            name: 'boss迁OA'
           },
+          {
+            id: 2,
+            name: '目标计划'
+          }
+        ],
+        note2: [
+          {
+            id: 1,
+            name: '学习mybatis'
+          },
+          {
+            id: 2,
+            name: '学习vue,go'
+          },
+          {
+            id: 3,
+            name: '跑步'
+          }
+        ],
+        note3: [
           {
             id: 2,
             name: '玩游戏'
           },
           {
             id: 3,
-            name: '睡觉'
-          },
-          {
-            id: 4,
-            name: '学习'
+            name: '弹琴'
           }
         ],
-        note2: 'two',
-        note3: 'three',
-        note4: 'four'
+        note4: [
+          {
+            id: 1,
+            name: '吃午饭'
+          },
+          {
+            id: 2,
+            name: '告警'
+          }
+        ]
       }
     },
     mounted () {
