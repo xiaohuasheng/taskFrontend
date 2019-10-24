@@ -73,10 +73,10 @@
     <div class="hello">
       <ul>
         <form @submit.prevent="submit">
-          <select class="big-select" name="public-choice" v-model="form_data.selected">
+          <select class="big-select" name="public-choice" v-model="form_data.type">
             <option :value="coupon.id" v-for="coupon in type_list" v-bind:key="coupon.id">{{coupon.name}}</option>
           </select>
-          <input class="big-input" type="text" name="name" v-model="form_data.a_task">
+          <input class="big-input" type="text" name="name" v-model="form_data.name">
           <input class="btn-primary" type="submit" value="提交">
         </form>
       </ul>
@@ -148,69 +148,22 @@
           {'id': 4, 'name': '不重紧'}
         ],
         form_data: {
-          selected: '',
-          a_task: ''
+          type: '',
+          name: ''
         },
         trash: [],
-        note: {
-          1: [
-            {
-              id: 1,
-              name: 'boss迁OA'
-            },
-            {
-              id: 2,
-              name: '目标计划'
-            }
-          ],
-          2: [
-            {
-              id: 3,
-              name: '学习mybatis'
-            },
-            {
-              id: 4,
-              name: '学习vue,go'
-            },
-            {
-              id: 5,
-              name: '跑步'
-            }
-          ],
-          3: [
-            {
-              id: 6,
-              name: '玩游戏'
-            },
-            {
-              id: 7,
-              name: '弹琴'
-            }
-          ],
-          4: [
-            {
-              id: 8,
-              name: '吃午饭'
-            },
-            {
-              id: 9,
-              name: '告警'
-            }
-          ]
-        }
+        note: {}
       }
     },
     mounted () {
       // 多一个斜线就不一样了，会301， http://192.168.3.97:9999/tasks/
-      this.axios.get('http://192.168.3.97:9999/tasks').then(response => (this.info = response.data))
+      this.axios.get('http://192.168.3.97:9999/tasks').then(response => (this.note = response.data))
         .catch(function (error) { // 请求失败处理
           console.log(error)
         })
     },
     updated () {
-      console.log('note1', this.note1)
-      // console.log('list:', this.list)
-      // console.log('list2:', this.list2)
+      console.log(this.note)
     },
     methods: {
       end (ev) {
@@ -218,8 +171,14 @@
       },
       submit: function () {
         console.log(this.form_data)
-        this.note[this.form_data.selected].push({'id': '', 'name': this.form_data.a_task})
-        this.form_data.a_task = ''
+        console.log(this.form_data)
+        this.axios.post('http://192.168.3.97:9999/task', this.form_data).then(function (res) {
+          // TODO 如何在这里引用data的数据？
+        }).catch(function (error) { // 请求失败处理
+          console.log(error)
+        })
+        this.note[this.form_data.type].push({'id': '', 'name': this.form_data.name})
+        this.form_data.name = ''
       }
     }
   }
