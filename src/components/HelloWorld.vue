@@ -165,6 +165,19 @@
     updated () {
       console.log(this.note)
     },
+    watch: {
+      trash: function (val) {
+        let taskId = val[0].id
+        this.axios.delete('http://192.168.3.97:9999/task/' + taskId).then(function (res) {
+          // TODO 如何在这里引用data的数据？
+        }).catch(function (error) {
+          // 请求失败处理
+          console.log(error)
+        })
+        // 清空
+        this.trash = {}
+      }
+    },
     methods: {
       end (ev) {
         console.log(ev.to.className)
@@ -177,8 +190,17 @@
         }).catch(function (error) { // 请求失败处理
           console.log(error)
         })
-        this.note[this.form_data.type].push({'id': '', 'name': this.form_data.name})
-        this.form_data.name = ''
+        const type = this.form_data.type
+        const name = this.form_data.name
+        if (this.note.hasOwnProperty(type)) {
+          console.log('here')
+          this.note[type].push({'id': '', 'name': name})
+        } else {
+          console.log('not define, here')
+          this.note[type] = {'id': '', 'name': name}
+          console.log(this.note)
+        }
+        // this.form_data.name = ''
       }
     }
   }
