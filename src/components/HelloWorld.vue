@@ -87,7 +87,7 @@
           <td>
             <div>
               <vuedraggable class="wrapper" v-model="note[2]" :options="{group:'people',}" @end="end">
-                <div v-for="item in note[2]" :key="item.id" class="item">
+                <div v-for="item in note[2]" :key="item.id" class="item" @dblclick="updateStatus(item)">
                   <p>{{item.name}}</p>
                 </div>
               </vuedraggable>
@@ -96,7 +96,7 @@
           <td>
             <div>
               <vuedraggable class="wrapper" v-model="note[1]" :options="{group:'people',}" @end="end">
-                <div v-for="item in note[1]" :key="item.id" class="item">
+                <div v-for="item in note[1]" :key="item.id" class="item" @dblclick="updateStatus(item)">
                   <p>{{item.name}}</p>
                 </div>
               </vuedraggable>
@@ -107,7 +107,7 @@
           <td>
             <div>
               <vuedraggable class="wrapper" v-model="note[3]" :options="{group:'people',}" @end="end">
-                <div v-for="item in note[3]" :key="item.id" class="item">
+                <div v-for="item in note[3]" :key="item.id" class="item" @dblclick="updateStatus(item)">
                   <p>{{item.name}}</p>
                 </div>
               </vuedraggable>
@@ -116,7 +116,7 @@
           <td>
             <div>
               <vuedraggable class="wrapper" v-model="note[4]" :options="{group:'people',}" @end="end">
-                <div v-for="item in note[4]" :key="item.id" class="item">
+                <div v-for="item in note[4]" :key="item.id" class="item" @dblclick="updateStatus(item)">
                   <p>{{item.name}}</p>
                 </div>
               </vuedraggable>
@@ -165,9 +165,7 @@
         console.log(error)
       })
     },
-    updated (before, after) {
-      console.log(before)
-      console.log(after)
+    updated () {
     },
     watch: {
       trash: function (val) {
@@ -183,6 +181,18 @@
       }
     },
     methods: {
+      updateStatus (item) {
+        console.log(item)
+        item.status = 1
+        this.axios.put('http://192.168.3.97:9999/task/' + item.id, item).then(data => {
+          let itemList = this.note[item.type]
+          let itemPos = itemList.indexOf(item)
+          this.note[item.type].splice(itemPos, 1)
+        }).catch(function (error) {
+          // 请求失败处理
+          console.log(error)
+        })
+      },
       end (ev) {
         console.log(ev.to.className)
       },
