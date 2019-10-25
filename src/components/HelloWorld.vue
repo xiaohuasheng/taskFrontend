@@ -160,12 +160,14 @@
       // 多一个斜线就不一样了，会301， http://192.168.3.97:9999/tasks/
       this.axios.get('http://192.168.3.97:9999/tasks').then(response => {
         this.note = response.data
-        console.log(response)
+        for (let i = 1; i < 5; i++) {
+          if (!this.note.hasOwnProperty(i)) {
+            this.note[i] = []
+          }
+        }
       }).catch(function (error) { // 请求失败处理
         console.log(error)
       })
-    },
-    updated () {
     },
     watch: {
       trash: function (val) {
@@ -182,7 +184,6 @@
     },
     methods: {
       updateStatus (item) {
-        console.log(item)
         item.status = 1
         this.axios.put('http://192.168.3.97:9999/task/' + item.id, item).then(data => {
           let itemList = this.note[item.type]
@@ -197,8 +198,6 @@
         console.log(ev.to.className)
       },
       submit: function () {
-        console.log(this.form_data)
-        console.log(this.form_data)
         this.axios.post('http://192.168.3.97:9999/task', this.form_data).then(data => {
           this.form_data.id = data.data.data
         }).catch(function (error) { // 请求失败处理
@@ -208,10 +207,8 @@
         const name = this.form_data.name
         let insertData = {'id': this.form_data.id, 'name': name}
         if (this.note.hasOwnProperty(type)) {
-          console.log('here')
           this.note[type].push(insertData)
         } else {
-          console.log('not define, here')
           this.note[type] = insertData
         }
         // this.form_data.name = ''
