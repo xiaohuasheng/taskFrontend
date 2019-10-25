@@ -83,40 +83,12 @@
     </div>
     <div>
       <table class="a_table">
-        <tr>
-          <td>
+        <tr v-for="(block, index) in [[2,1], [3,4]]" :key="index">
+          <td v-for="i in block" :key="i">
             <div>
-              <vuedraggable class="wrapper" v-model="note[2]" :options="{group:'people',}" @end="end">
-                <div v-for="item in note[2]" :key="item.id" class="item" @dblclick="updateStatus(item)">
-                  <p>{{item.name}}</p>
-                </div>
-              </vuedraggable>
-            </div>
-          </td>
-          <td>
-            <div>
-              <vuedraggable class="wrapper" v-model="note[1]" :options="{group:'people',}" @end="end">
-                <div v-for="item in note[1]" :key="item.id" class="item" @dblclick="updateStatus(item)">
-                  <p>{{item.name}}</p>
-                </div>
-              </vuedraggable>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div>
-              <vuedraggable class="wrapper" v-model="note[3]" :options="{group:'people',}" @end="end">
-                <div v-for="item in note[3]" :key="item.id" class="item" @dblclick="updateStatus(item)">
-                  <p>{{item.name}}</p>
-                </div>
-              </vuedraggable>
-            </div>
-          </td>
-          <td>
-            <div>
-              <vuedraggable class="wrapper" v-model="note[4]" :options="{group:'people',}" @end="end">
-                <div v-for="item in note[4]" :key="item.id" class="item" @dblclick="updateStatus(item)">
+              <vuedraggable v-bind:id="i" v-model="note[i]" :options="{group:'people',}" @end="end">
+                <div v-for="item in note[i]" :key="item.id" v-bind:id="item.id" class="item"
+                     @dblclick="updateStatus(item)">
                   <p>{{item.name}}</p>
                 </div>
               </vuedraggable>
@@ -194,8 +166,22 @@
           console.log(error)
         })
       },
+      updateType (item) {
+        this.axios.put('http://192.168.3.97:9999/task/' + item.id, item).then(data => {
+          console.log(data)
+        }).catch(function (error) {
+          // 请求失败处理
+          console.log(error)
+        })
+      },
       end (ev) {
-        console.log(ev.to.className)
+        console.log(ev)
+        let item = {
+          'id': ev.item.id,
+          'type': ev.to.id,
+          'name': ev.item.innerText
+        }
+        this.updateType(item)
       },
       submit: function () {
         this.axios.post('http://192.168.3.97:9999/task', this.form_data).then(data => {
