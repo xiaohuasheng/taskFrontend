@@ -127,7 +127,7 @@
     </div>
     <div>
       删除区域
-      <vuedraggable class="wrapper" v-model="trash" :options="{group:'people',}" @end="end">
+      <vuedraggable class="wrapper" v-model="trash" :options="{group:'people',}">
       </vuedraggable>
     </div>
   </div>
@@ -142,12 +142,13 @@
     data () {
       return {
         type_list: [
-          {'id': 1, 'name': '重紧'},
-          {'id': 2, 'name': '重不紧'},
-          {'id': 3, 'name': '不重不紧'},
-          {'id': 4, 'name': '不重紧'}
+          {'id': 1, 'name': '重要紧急'},
+          {'id': 2, 'name': '重要不紧急'},
+          {'id': 3, 'name': '不重要不紧急'},
+          {'id': 4, 'name': '紧急不重要'}
         ],
         form_data: {
+          id: 0,
           type: '',
           name: ''
         },
@@ -157,19 +158,22 @@
     },
     mounted () {
       // 多一个斜线就不一样了，会301， http://192.168.3.97:9999/tasks/
-      this.axios.get('http://192.168.3.97:9999/tasks').then(response => (this.note = response.data))
-        .catch(function (error) { // 请求失败处理
-          console.log(error)
-        })
+      this.axios.get('http://192.168.3.97:9999/tasks').then(response => {
+        this.note = response.data
+        console.log(response)
+      }).catch(function (error) { // 请求失败处理
+        console.log(error)
+      })
     },
-    updated () {
-      console.log(this.note)
+    updated (before, after) {
+      console.log(before)
+      console.log(after)
     },
     watch: {
       trash: function (val) {
         let taskId = val[0].id
-        this.axios.delete('http://192.168.3.97:9999/task/' + taskId).then(function (res) {
-          // TODO 如何在这里引用data的数据？
+        this.axios.delete('http://192.168.3.97:9999/task/' + taskId).then(data => {
+          console.log(data)
         }).catch(function (error) {
           // 请求失败处理
           console.log(error)
@@ -185,20 +189,20 @@
       submit: function () {
         console.log(this.form_data)
         console.log(this.form_data)
-        this.axios.post('http://192.168.3.97:9999/task', this.form_data).then(function (res) {
-          // TODO 如何在这里引用data的数据？
+        this.axios.post('http://192.168.3.97:9999/task', this.form_data).then(data => {
+          this.form_data.id = data.data.data
         }).catch(function (error) { // 请求失败处理
           console.log(error)
         })
         const type = this.form_data.type
         const name = this.form_data.name
+        let insertData = {'id': this.form_data.id, 'name': name}
         if (this.note.hasOwnProperty(type)) {
           console.log('here')
-          this.note[type].push({'id': '', 'name': name})
+          this.note[type].push(insertData)
         } else {
           console.log('not define, here')
-          this.note[type] = {'id': '', 'name': name}
-          console.log(this.note)
+          this.note[type] = insertData
         }
         // this.form_data.name = ''
       }
