@@ -67,12 +67,24 @@
   .big-select {
     height: 32px;
   }
+
+  .trash {
+    display: inline-block;
+    border: 1px solid darkgrey;
+    width: 10%;
+    height: 50px;
+  }
 </style>
 <template>
   <div class="hello">
     <div class="hello">
       <ul>
         <form @submit.prevent="submit">
+          <div class="trash">
+            删除区域
+            <vuedraggable class="wrapper" v-model="trash" :options="{group:'people',}">
+            </vuedraggable>
+          </div>
           <select class="big-select" name="public-choice" v-model="form_data.type">
             <option :value="coupon.id" v-for="coupon in type_list" v-bind:key="coupon.id">{{coupon.name}}</option>
           </select>
@@ -96,11 +108,6 @@
           </td>
         </tr>
       </table>
-    </div>
-    <div>
-      删除区域
-      <vuedraggable class="wrapper" v-model="trash" :options="{group:'people',}">
-      </vuedraggable>
     </div>
   </div>
 </template>
@@ -141,26 +148,35 @@
         console.log(error)
       })
     },
-    watch: {
-      trash: function (val) {
-        let taskId = val[0].id
-        this.axios.delete('http://192.168.3.97:9999/task/' + taskId).then(data => {
-          console.log(data)
-        }).catch(function (error) {
-          // 请求失败处理
-          console.log(error)
-        })
-        // 清空
-        this.trash = {}
-      }
-    },
     methods: {
+      deleteTask (item) {
+        let r = confirm('确定要删除' + item.name + '吗?')
+        if (r) {
+          this.axios.delete('http://192.168.3.97:9999/task/' + item.id).then(data => {
+            if (data.data.data) {
+              alert('删除成功')
+            } else {
+              alert('删除失败')
+              console.log(data)
+            }
+          }).catch(function (error) {
+            // 请求失败处理
+            console.log(error)
+          })
+        }
+      },
       updateStatus (item) {
         item.status = 1
         this.axios.put('http://192.168.3.97:9999/task/' + item.id, item).then(data => {
-          let itemList = this.note[item.type]
-          let itemPos = itemList.indexOf(item)
-          this.note[item.type].splice(itemPos, 1)
+          if (data.data.data) {
+            alert('更新成功')
+            let itemList = this.note[item.type]
+            let itemPos = itemList.indexOf(item)
+            this.note[item.type].splice(itemPos, 1)
+          } else {
+            alert('更新失败')
+            console.log(data)
+          }
         }).catch(function (error) {
           // 请求失败处理
           console.log(error)
@@ -168,7 +184,12 @@
       },
       updateType (item) {
         this.axios.put('http://192.168.3.97:9999/task/' + item.id, item).then(data => {
-          console.log(data)
+          if (data.data.data) {
+            alert('移动成功')
+          } else {
+            alert('移动失败')
+            console.log(data)
+          }
         }).catch(function (error) {
           // 请求失败处理
           console.log(error)
@@ -181,22 +202,30 @@
           'type': ev.to.id,
           'name': ev.item.innerText
         }
-        this.updateType(item)
+        if (item.type) {
+          this.updateType(item)
+        } else {
+          this.deleteTask(item)
+        }
       },
       submit: function () {
         this.axios.post('http://192.168.3.97:9999/task', this.form_data).then(data => {
-          this.form_data.id = data.data.data
+          if (data.data.data) {
+            alert('添加成功')
+            const type = this.form_data.type
+            const name = this.form_data.name
+            let insertData = {'id': data.data.data, 'name': name, 'type': type}
+            if (this.note.hasOwnProperty(type)) {
+              this.note[type].push(insertData)
+            } else {
+              this.note[type] = insertData
+            }
+          } else {
+            alert('添加失败')
+          }
         }).catch(function (error) { // 请求失败处理
           console.log(error)
         })
-        const type = this.form_data.type
-        const name = this.form_data.name
-        let insertData = {'id': this.form_data.id, 'name': name}
-        if (this.note.hasOwnProperty(type)) {
-          this.note[type].push(insertData)
-        } else {
-          this.note[type] = insertData
-        }
         // this.form_data.name = ''
       }
     }
