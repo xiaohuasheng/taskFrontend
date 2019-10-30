@@ -136,8 +136,8 @@
       }
     },
     mounted () {
-      // 多一个斜线就不一样了，会301， http://192.168.3.97:9999/tasks/
-      this.axios.get('http://192.168.3.97:9999/tasks').then(response => {
+      // 多一个斜线就不一样了，会301， http://127.0.0.1:9999/tasks/
+      this.axios.get('http://127.0.0.1:9999/tasks').then(response => {
         this.note = response.data
         for (let i = 1; i < 5; i++) {
           if (!this.note.hasOwnProperty(i)) {
@@ -145,6 +145,7 @@
           }
         }
       }).catch(function (error) { // 请求失败处理
+        alert('服务端出错')
         console.log(error)
       })
     },
@@ -152,7 +153,7 @@
       deleteTask (item) {
         let r = confirm('确定要删除' + item.name + '吗?')
         if (r) {
-          this.axios.delete('http://192.168.3.97:9999/task/' + item.id).then(data => {
+          this.axios.delete('http://127.0.0.1:9999/task/' + item.id).then(data => {
             if (data.data.data) {
               alert('删除成功')
             } else {
@@ -167,7 +168,7 @@
       },
       updateStatus (item) {
         item.status = 1
-        this.axios.put('http://192.168.3.97:9999/task/' + item.id, item).then(data => {
+        this.axios.put('http://127.0.0.1:9999/task/' + item.id, item).then(data => {
           if (data.data.data) {
             alert('更新成功')
             let itemList = this.note[item.type]
@@ -183,7 +184,7 @@
         })
       },
       updateType (item) {
-        this.axios.put('http://192.168.3.97:9999/task/' + item.id, item).then(data => {
+        this.axios.put('http://127.0.0.1:9999/task/' + item.id, item).then(data => {
           if (data.data.data) {
             alert('移动成功')
           } else {
@@ -209,7 +210,7 @@
         }
       },
       submit: function () {
-        this.axios.post('http://192.168.3.97:9999/task', this.form_data).then(data => {
+        this.axios.post('http://127.0.0.1:9999/task', this.form_data).then(data => {
           if (data.data.data) {
             alert('添加成功')
             const type = this.form_data.type
