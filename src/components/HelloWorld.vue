@@ -19,13 +19,14 @@
   }
 
   .a_table {
-    width: 98%;
+    width: 90%;
     margin: 0 auto;
     height: auto;
   }
 
   .a_table td {
     border: 1px solid #d6d6d6;
+    width: 1%;
   }
 
   .a_table td div.item {
@@ -71,8 +72,8 @@
   .trash {
     display: inline-block;
     border: 1px solid darkgrey;
-    width: 10%;
     height: 50px;
+    padding: 2px 10px;
   }
 </style>
 <template>
@@ -89,7 +90,7 @@
             <option :value="coupon.id" v-for="coupon in type_list" v-bind:key="coupon.id">{{coupon.name}}</option>
           </select>
           <input class="big-input" type="text" name="name" v-model="form_data.name">
-          <input class="btn-primary" type="submit" value="提交">
+          <input class="btn-primary" type="submit" value="提交" v-bind:disabled="forbid_submit">
         </form>
       </ul>
     </div>
@@ -120,6 +121,7 @@
     name: 'hello',
     data () {
       return {
+        forbid_submit: false,
         type_list: [
           {'id': 1, 'name': '重要紧急'},
           {'id': 2, 'name': '重要不紧急'},
@@ -145,7 +147,7 @@
           }
         }
       }).catch(function (error) { // 请求失败处理
-        alert('服务端出错')
+        this.$layer.msg('服务端出错')
         console.log(error)
       })
     },
@@ -155,9 +157,9 @@
         if (r) {
           this.axios.delete('http://task.xiaohuasheng.cc/api/task/' + item.id).then(data => {
             if (data.data.data) {
-              alert('删除成功')
+              this.$layer.msg('删除成功')
             } else {
-              alert('删除失败')
+              this.$layer.msg('删除失败')
               console.log(data)
             }
           }).catch(function (error) {
@@ -170,12 +172,12 @@
         item.status = 1
         this.axios.put('http://task.xiaohuasheng.cc/api/task/' + item.id, item).then(data => {
           if (data.data.data) {
-            alert('更新成功')
+            this.$layer.msg('更新成功')
             let itemList = this.note[item.type]
             let itemPos = itemList.indexOf(item)
             this.note[item.type].splice(itemPos, 1)
           } else {
-            alert('更新失败')
+            this.$layer.msg('更新失败')
             console.log(data)
           }
         }).catch(function (error) {
@@ -186,18 +188,20 @@
       updateType (item) {
         this.axios.put('http://task.xiaohuasheng.cc/api/task/' + item.id, item).then(data => {
           if (data.data.data) {
-            alert('移动成功')
+            this.$layer.msg('移动成功')
           } else {
-            alert('移动失败')
+            this.$layer.msg('移动失败')
             console.log(data)
           }
-        }).catch(function (error) {
-          // 请求失败处理
+        }).catch(error => {
           console.log(error)
         })
       },
       end (ev) {
         console.log(ev)
+        if (ev.from.id === ev.to.id && ev.oldIndex === ev.newIndex) {
+          return
+        }
         let item = {
           'id': ev.item.id,
           'type': ev.to.id,
@@ -210,11 +214,13 @@
         }
       },
       submit: function () {
+        this.forbid_submit = true
         this.axios.post('http://task.xiaohuasheng.cc/api/task', this.form_data).then(data => {
           if (data.data.data) {
-            alert('添加成功')
+            this.$layer.msg('添加成功')
             const type = this.form_data.type
             const name = this.form_data.name
+            this.form_data.name = ''
             let insertData = {'id': data.data.data, 'name': name, 'type': type}
             if (this.note.hasOwnProperty(type)) {
               this.note[type].push(insertData)
@@ -222,12 +228,13 @@
               this.note[type] = insertData
             }
           } else {
-            alert('添加失败')
+            this.$layer.msg('添加失败')
           }
-        }).catch(function (error) { // 请求失败处理
+          this.forbid_submit = false
+        }).catch(error => {
           console.log(error)
+          this.forbid_submit = false
         })
-        // this.form_data.name = ''
       }
     }
   }

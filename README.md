@@ -13,3 +13,28 @@
    cnpm run dev
    ```
 
+
+
+安装组件
+
+1. install
+
+   ```
+   cnpm install vue-layer
+   ```
+
+   
+
+2. src/main.js
+
+   ```
+   import layer from 'vue-layer'
+   import 'vue-layer/lib/vue-layer.css'
+   
+   Vue.prototype.$layer = layer(Vue)
+   
+   ```
+
+   
+
+3. 

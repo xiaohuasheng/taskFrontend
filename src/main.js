@@ -5,6 +5,8 @@ import App from './App'
 import router from './router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import layer from 'vue-layer'
+import 'vue-layer/lib/vue-layer.css'
 
 Vue.use(VueAxios, axios)
 Vue.config.productionTip = false
@@ -22,6 +24,11 @@ axios.defaults.transformRequest = [function (data) {
 
 // 然后再修改原型链
 Vue.prototype.$axios = axios
+Vue.prototype.$layer = layer(Vue)
+// Vue.prototype.$layer = layer({
+//   // 目前只有一项，即msg方法的默认消失时间，单位：秒
+//   msgtime: 3
+// })
 
 /* eslint-disable no-new */
 new Vue({
