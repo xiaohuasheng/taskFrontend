@@ -8,6 +8,11 @@ import VueAxios from 'vue-axios'
 import layer from 'vue-layer'
 import 'vue-layer/lib/vue-layer.css'
 
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+
+Vue.use(ElementUI)
+
 Vue.use(VueAxios, axios)
 Vue.config.productionTip = false
 
