@@ -148,13 +148,13 @@
     </div>
     <el-dialog title="新增任务" :visible.sync="dialogFormVisible">
       <el-form :model="form_data">
-        <el-form-item label="紧急重要程度" :label-width="formLabelWidth">
+        <el-form-item>
           <el-select v-model="form_data.type" placeholder="请选择">
             <el-option :label="coupon.name" :value="coupon.id" v-for="coupon in type_list"
                        v-bind:key="coupon.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="任务名称" :label-width="formLabelWidth">
+        <el-form-item>
           <el-input v-model="form_data.name" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
