@@ -136,7 +136,8 @@
           <el-card class="box-card">
             <div>
               <vuedraggable v-bind:id="i" v-model="note[i]" :options="{group:'people',}" @end="end">
-                <div v-for="item in note[i]" :key="item.id" v-bind:id="item.id" class="item" @dblclick="updateStatus(item)">
+                <div v-for="item in note[i]" :key="item.id" v-bind:id="item.id" class="item"
+                     @dblclick="updateStatus(item)">
                   <span>{{item.name}}</span>
                   <el-divider></el-divider>
                 </div>
@@ -255,10 +256,34 @@
           console.log(error)
         })
       },
+      updateSort (item) {
+        this.axios.post('http://task.xiaohuasheng.cc/api/task_list/sort', item).then(data => {
+          if (data.data.data) {
+            this.$message('排序更新成功')
+          } else {
+            this.$message('移动失败')
+            console.log(data)
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+      },
       end (ev) {
         console.log(ev)
         if (ev.from.id === ev.to.id && ev.oldIndex === ev.newIndex) {
           return
+        }
+        let type = ev.to.id
+        // 获取该象限内所有条目的顺序
+        let itemSort = {
+          'idList': []
+        }
+        if (this.note[type]) {
+          let idList = []
+          this.note[type].forEach(function (item, key) {
+            idList.push(item['id'])
+          })
+          itemSort['idList'] = idList
         }
         let item = {
           'id': ev.item.id,
@@ -266,7 +291,12 @@
           'name': ev.item.innerText
         }
         if (item.type) {
-          this.updateType(item)
+          if (ev.from.id === ev.to.id) {
+            this.updateSort(itemSort)
+          } else {
+            this.updateType(item)
+            this.updateSort(itemSort)
+          }
         } else {
           this.deleteTask(item)
         }
