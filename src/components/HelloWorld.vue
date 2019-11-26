@@ -201,6 +201,9 @@
             this.note[i] = []
           }
         }
+        this.note[1].forEach(function (item) {
+          console.log(item.name)
+        })
       }).catch(function (error) { // 请求失败处理
         this.$message('服务端出错')
         console.log(error)
