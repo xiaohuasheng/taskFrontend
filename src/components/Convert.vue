@@ -1,14 +1,19 @@
 <template>
   <el-form ref="form" :model="form" label-width="80px">
     <el-form-item label="天机阁tags">
-      <el-input autosize type="textarea" size="medium" v-model="form.desc"></el-input>
+      <el-input autosize type="textarea" size="medium" v-model="form.tags"></el-input>
+      <el-input type="textarea" v-model="form.tagsRes"></el-input>
+      <el-button type="primary" @click="onSubmit('tags', form.tags)">转换</el-button>
     </el-form-item>
-    <el-form-item label="结果">
-      <el-input type="textarea" v-model="form.result"></el-input>
+    <el-form-item label="文件ID解码">
+      <el-input autosize type="textarea" size="medium" v-model="form.fileID"></el-input>
+      <el-input type="textarea" v-model="form.fileIDRes"></el-input>
+      <el-button type="primary" @click="onSubmit('fileID', form.fileID)">转换</el-button>
     </el-form-item>
-    <el-form-item>
-      <el-button type="primary" @click="onSubmit">转换</el-button>
-      <el-button>取消</el-button>
+    <el-form-item label="转义">
+      <el-input autosize type="textarea" size="medium" v-model="form.url"></el-input>
+      <el-input type="textarea" v-model="form.urlRes"></el-input>
+      <el-button type="primary" @click="onSubmit('rep', form.url)">转换</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -18,17 +23,30 @@ export default {
   data() {
     return {
       form: {
-        desc: '',
-        result: ''
+        tags: '',
+        tagsRes: '',
+        fileID: '',
+        fileIDRes: '',
+        url: '',
+        urlRes: ''
       }
     }
   },
   methods: {
-    onSubmit() {
-      this.axios.post('http://localhost:9090/convert', {'tags': this.form.desc}).then(data => {
+    onSubmit(type, value) {
+      this.axios.post('http://localhost:9090/convert', {'type': type, 'value': value}).then(data => {
         console.log(data)
         if (data.data.data) {
-          this.form.result = data.data.data
+          switch (type) {
+            case 'tags':
+              this.form.tagsRes = data.data.data
+              break
+            case 'fileID':
+              this.form.fileIDRes = data.data.data
+              break
+            case 'rep':
+              this.form.urlRes = data.data.data
+          }
         } else {
           this.$message('更新失败')
         }
