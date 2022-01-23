@@ -15,6 +15,11 @@
       <el-input type="textarea" v-model="form.urlRes"></el-input>
       <el-button type="primary" @click="onSubmit('rep', form.url)">转换</el-button>
     </el-form-item>
+    <el-form-item label="oidb命令字转换">
+      <el-input autosize type="textarea" size="medium" v-model="form.oidb"></el-input>
+      <el-input type="textarea" v-model="form.oidbRes"></el-input>
+      <el-button type="primary" @click="onSubmit('oidb', form.oidb)">转换</el-button>
+    </el-form-item>
   </el-form>
 </template>
 <script>
@@ -28,7 +33,9 @@ export default {
         fileID: '',
         fileIDRes: '',
         url: '',
-        urlRes: ''
+        urlRes: '',
+        oidb: '',
+        oidbRes: ''
       }
     }
   },
@@ -46,6 +53,10 @@ export default {
               break
             case 'rep':
               this.form.urlRes = data.data.data
+              break
+            case 'oidb':
+              this.form.oidbRes = data.data.data
+              break
           }
         } else {
           this.$message('更新失败')
