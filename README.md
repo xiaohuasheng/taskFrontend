@@ -23,18 +23,23 @@
    cnpm install vue-layer
    ```
 
-   
+
 
 2. src/main.js
 
    ```
    import layer from 'vue-layer'
    import 'vue-layer/lib/vue-layer.css'
-   
+
    Vue.prototype.$layer = layer(Vue)
-   
+
    ```
 
-   
 
-3. 
+
+3. 部署
+  ```
+  npm run build
+  ```
+  生成dist目录，放到nginx能访问的目录
+4.
