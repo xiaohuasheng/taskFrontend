@@ -9,6 +9,12 @@
       <el-input autosize type="textarea" v-model="form.sqlRes"></el-input>
       <el-button type="primary" @click="onSubmit('sql', form.sql)">转换</el-button>
     </el-form-item>
+    <el-form-item label="模板填充">
+      <el-input autosize placeholder="\1" type="textarea" size="medium" v-model.trim="form.tpl"></el-input>
+      <el-input autosize placeholder="一行一个" type="textarea" size="medium" v-model="form.tplValue"></el-input>
+      <el-input autosize type="textarea" v-model="form.tplRes"></el-input>
+      <el-button type="primary" @click="templateConvert(form.tpl, form.tplValue)">转换</el-button>
+    </el-form-item>
   </el-form>
 </template>
 <script>
@@ -19,22 +25,18 @@ export default {
       sqlPlaceholder: ' [SQL] 2022/08/04 16:04:42 SELECT xxx ? ?; [1:"xxx" 2:"xxx" 3:1]',
       form: {
         graphql: '',
-        tags: '',
-        tagsRes: '',
-        fileID: '',
-        fileIDRes: '',
-        url: '',
-        urlRes: '',
         sql: '',
         sqlRes: '',
-        oidb: '',
-        oidbRes: ''
+        tpl: '',
+        tplValue: '',
+        tplRes: ''
       }
     }
   },
   methods: {
     onSubmit(type, value) {
-      this.axios.post('http://task.xiaohuasheng.cc/api/convert', {'type': type, 'value': value}).then(data => {
+      let param = {'type': type, 'value': value}
+      this.axios.post('http://task.xiaohuasheng.cc/api/convert', param).then(data => {
         console.log(data)
         if (data.data.data) {
           switch (type) {
@@ -43,18 +45,6 @@ export default {
               break
             case 'graphql':
               this.form.graphql = data.data.data
-              break
-            case 'tags':
-              this.form.tagsRes = data.data.data
-              break
-            case 'fileID':
-              this.form.fileIDRes = data.data.data
-              break
-            case 'rep':
-              this.form.urlRes = data.data.data
-              break
-            case 'oidb':
-              this.form.oidbRes = data.data.data
               break
           }
         } else {
@@ -77,6 +67,30 @@ export default {
       }
       let strList = s.split('\n')
       this.form.graphql = strList.join('\\n')
+    },
+    templateConvert(tpl, tplValue) {
+      if (tpl.length <= 0 || tplValue.length <= 0) {
+        return ''
+      }
+      let spiltChar = ['|', '\n', ',']
+      let items = []
+      let spiltCh = ''
+      for (let key in spiltChar) {
+        items = tplValue.split(spiltChar[key])
+        if (items.length > 1) {
+          spiltCh = spiltChar[key]
+          break
+        }
+      }
+      if (items.length === 0) {
+        return tplValue
+      }
+      let resArr = []
+      for (let key in items) {
+        let tmp = tpl.replace('\\1', items[key])
+        resArr.push(tmp)
+      }
+      this.form.tplRes = resArr.join(spiltCh)
     }
   }
 }

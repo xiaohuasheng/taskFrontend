@@ -10,17 +10,7 @@ source ~/.bash_profile
 /opt/lib/node_modules/cnpm/bin/cnpm install
 /opt/lib/node_modules/cnpm/bin/cnpm run dev
 cnpm run build
-cp -rf dist/index.html /Users/xhs/go_workspace/work-utils-backend/views/index.html
-cp -rf dist/static /Users/xhs/go_workspace/work-utils-backend/static
-cp -rf dist/static/* /Users/xhs/go_workspace/work-utils-backend/static
-mkdir dist
-cp work-utils-backend dist
-cp -rf views dist
-cp -rf static dist
-ls dist
-cp -rf conf dist
 tar -zcvf dist.tar.gz dist
-scp dist.tar.gz root@xhs:/usr/local/openresty/nginx/html/
 scp dist.tar.gz root@114.215.111.84:/usr/local/openresty/nginx/html/ 
 ```
 1. 安装
