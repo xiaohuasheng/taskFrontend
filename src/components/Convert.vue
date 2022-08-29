@@ -4,13 +4,16 @@
       <el-button type="primary" @click="graphqlConvert()">转换</el-button>
       <el-input autosize type="textarea" size="medium" v-model="form.graphql"></el-input>
     </el-form-item>
+    <el-divider></el-divider>
     <el-form-item label="sql填充参数">
       <el-input autosize :placeholder="sqlPlaceholder" type="textarea" size="medium" v-model="form.sql"></el-input>
       <el-input autosize type="textarea" v-model="form.sqlRes"></el-input>
       <el-button type="primary" @click="onSubmit('sql', form.sql)">转换</el-button>
     </el-form-item>
+    <el-divider></el-divider>
     <el-form-item label="模板填充">
-      <el-input autosize placeholder="\1" type="textarea" size="medium" v-model.trim="form.tpl"></el-input>
+      <el-button type="primary" @click="templateConvert(form.tpl, form.tplValue)">转换</el-button>
+      <el-input autosize placeholder="\1" type="textarea" size="medium" v-model="form.tpl"></el-input>
       <el-input autosize placeholder="一行一个" type="textarea" size="medium" v-model="form.tplValue"></el-input>
       <el-input autosize type="textarea" v-model="form.tplRes"></el-input>
       <el-button type="primary" @click="templateConvert(form.tpl, form.tplValue)">转换</el-button>
@@ -87,7 +90,7 @@ export default {
       }
       let resArr = []
       for (let key in items) {
-        let tmp = tpl.replace('\\1', items[key])
+        let tmp = tpl.replaceAll('\\1', items[key])
         resArr.push(tmp)
       }
       this.form.tplRes = resArr.join(spiltCh)
