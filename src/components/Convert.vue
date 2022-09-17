@@ -23,6 +23,11 @@
       <el-input autosize type="textarea" v-model="form.tplRes"></el-input>
       <el-button type="primary" @click="templateConvert(form.tpl, form.tplValue)">转换</el-button>
     </el-form-item>
+    <el-divider></el-divider>
+    <el-form-item label="json压缩">
+      <el-input autosize type="textarea" size="medium" v-model="form.jsonStr"></el-input>
+      <el-button type="primary" @click="jsonConvert(form.jsonStr)">转换</el-button>
+    </el-form-item>
     <!-- 去重，分割，排序 -->
     <el-divider></el-divider>
     <el-form-item label="分割排序去重">
@@ -46,7 +51,8 @@ export default {
         tplValue: '',
         tplRes: '',
         split: '',
-        splitRes: ''
+        splitRes: '',
+        jsonStr: ''
       },
       historyList: []
     }
@@ -125,10 +131,18 @@ export default {
         if (row.length === 0) {
           continue
         }
-        let tmp = row.split(' SELECT')
+        let sqlPrefixs = ['SELECT', 'INSERT', 'UPDATE']
+        let prefix = sqlPrefixs[0]
+        for (let prefixIndex in sqlPrefixs) {
+          if (row.indexOf(sqlPrefixs[prefixIndex]) > -1) {
+            prefix = sqlPrefixs[prefixIndex]
+            break
+          }
+        }
+        let tmp = row.split(prefix)
         let toConvert = tmp[0]
         if (tmp.length > 1) {
-          toConvert = 'SELECT' + tmp[1]
+          toConvert = prefix + tmp[1]
         }
         let tmpSql = this.ConvertOneSql(toConvert)
         result.push(tmpSql)
@@ -136,14 +150,13 @@ export default {
       this.form.sqlRes = result.join('\n')
     },
     ConvertOneSql(data) {
-      let strList = data.split('[')
-      if (strList.length < 2) {
+      let splitCharPos = data.indexOf('[')
+      if (splitCharPos === -1) {
         return data
       }
-      let sql = strList[0]
-      let params = strList[1]
-      params = params.slice(0, params.length - 1)
-      let paramStrList = params.split(' ')
+      let sql = data.slice(0, splitCharPos)
+      let paramsStr = data.slice(splitCharPos + 1, data.length - 1)
+      let paramStrList = paramsStr.split(' ')
       let paramList = []
       for (let key in paramStrList) {
         let val = paramStrList[key]
@@ -158,6 +171,16 @@ export default {
         sql = sql.replace('?', val)
       }
       return sql
+    },
+    jsonConvert(jsonStr) {
+      if (jsonStr.length === 0) {
+        return
+      }
+      if (jsonStr.includes('\n')) {
+        this.form.jsonStr = JSON.stringify(JSON.parse(jsonStr))
+      } else {
+        this.form.jsonStr = JSON.stringify(JSON.parse(jsonStr), null, '  ')
+      }
     },
     splitSortConvert(source) {
       if (source.length === 0) {
