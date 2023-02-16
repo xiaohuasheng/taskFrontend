@@ -35,9 +35,15 @@
       <el-input autosize type="textarea" v-model="form.splitRes"></el-input>
       <el-button type="primary" @click="splitSortConvert(form.split)">转换</el-button>
     </el-form-item>
+    <el-form-item label="ES日志转换为curl">
+      <el-input autosize type="textarea" size="medium" v-model="form.eslog"></el-input>
+      <el-input autosize type="textarea" v-model="form.eslogRes"></el-input>
+      <el-button type="primary" @click="eslogConvert(form.eslog)">转换</el-button>
+    </el-form-item>
   </el-form>
 </template>
 <script>
+import {convertLogToCurlCommand} from '../convert'
 export default {
   name: 'Convert',
   data() {
@@ -52,7 +58,9 @@ export default {
         tplRes: '',
         split: '',
         splitRes: '',
-        jsonStr: ''
+        jsonStr: '',
+        eslog: '',
+        eslogRes: ''
       },
       historyList: []
     }
@@ -226,6 +234,13 @@ export default {
             historyList = JSON.parse(localStorage.getItem('historyList'))
         }
         return historyList
+    },
+    eslogConvert(eslog) {
+      if (eslog.length === 0) {
+        return
+      }
+      let curlCommand = convertLogToCurlCommand(eslog)
+      this.form.eslogRes = curlCommand
     }
   }
 }
