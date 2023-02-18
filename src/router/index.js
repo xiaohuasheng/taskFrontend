@@ -4,6 +4,7 @@ import HelloWorld from '@/components/HelloWorld'
 import Note from '@/components/Note'
 import Convert from '@/components/Convert'
 import WorkUtils from '@/components/WorkUtils'
+import post from '@/components/post'
 
 Vue.use(Router)
 
@@ -33,6 +34,11 @@ export default new Router({
       path: '/work-utils',
       name: 'workUtils',
       component: WorkUtils
+    },
+    {
+      path: '/post',
+      name: 'post',
+      component: post
     }
   ]
 })
