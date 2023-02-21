@@ -1,5 +1,20 @@
 <template>
   <el-form ref="form" :model="form" label-width="80px">
+    <el-form-item label="nginx日志解析">
+      <el-upload
+        class="upload-demo"
+        action=""
+        :http-request="uploadSectionFile"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        multiple
+        :limit="1"
+        :on-exceed="handleExceed"
+        :file-list="fileList">
+        <el-button size="small" type="primary">点击上传</el-button>
+      </el-upload>
+    </el-form-item>
     <el-form-item label="item/graphql参数转换">
       <el-button type="primary" @click="graphqlConvert()">转换</el-button>
       <el-input autosize type="textarea" size="medium" v-model="form.graphql"></el-input>
@@ -44,7 +59,7 @@
 </template>
 <script>
 import {convertLogToCurlCommand} from '../convert'
-import {parseNginxLog} from '../parseNginxLog'
+import { saveAs } from 'file-saver'
 export default {
   name: 'Convert',
   data() {
@@ -63,7 +78,9 @@ export default {
         eslog: '',
         eslogRes: ''
       },
-      historyList: []
+      historyList: [],
+      fileList: [],
+      nginxResult: ''
     }
   },
   mounted () {
@@ -254,12 +271,75 @@ export default {
       let curlCommand = convertLogToCurlCommand(eslog)
       this.form.eslogRes = curlCommand
     },
-    nginxLogPathConvert(nginxLogPath) {
-      if (nginxLogPath.length === 0) {
-        return
+    handleRemove(file, fileList) {
+      console.log(file, fileList)
+    },
+    handlePreview(file) {
+      console.log(file)
+    },
+    handleExceed(files, fileList) {
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除`)
+    },
+    convertNginxLog(filename, nginxLog) {
+      const lines = nginxLog.split('\n')
+      console.log(lines)
+      const result = []
+      lines.forEach((line) => {
+        const lineArr = line.split(' ')
+        if (lineArr.length < 7) {
+          console.log('无法解析的行', line, 'lineArr.length', lineArr.length)
+          return
+        }
+        let time = lineArr[3] + ' ' + lineArr[4]
+        let method = lineArr[5]
+        let path = lineArr[6]
+        // 取lineArr最后一个元素
+        let requestTime = lineArr[lineArr.length - 1]
+        requestTime = parseFloat(requestTime.replace(/"/g, ''))
+        if (isNaN(requestTime)) {
+          console.log('无法解析请求耗时', line, 'lineArr.length', lineArr.length)
+          return
+        }
+        // 把数据放到对象里，按请求耗时排序，耗时相同按请求时间排序
+        let resultObj = {
+          time: time,
+          method: method + ' ' + path,
+          requestTime: requestTime
+        }
+        result.push(resultObj)
+      })
+      // 对result按请求耗时排序，耗时相同按请求时间排序
+      result.sort((a, b) => {
+        if (a.requestTime === b.requestTime) {
+          return a.time > b.time ? 1 : -1
+        } else {
+          return a.requestTime > b.requestTime ? -1 : 1
+        }
+      })
+      // 转为字符串，输出
+      let resultStr = ''
+      result.forEach((item) => {
+        resultStr += item.time + ' ' + item.method + ' ' + item.requestTime + '\n'
+      })
+      let strData = new Blob([resultStr], { type: 'text/plain;charset=utf-8' })
+      // 文件名加上parsed后缀
+      let fileName = filename.replace(/(\.[^.]+)$/, '_parsed$1')
+      saveAs(strData, fileName)
+    },
+    uploadSectionFile(param) {
+      var fileObj = param.file
+      var reader = new FileReader()
+      reader.readAsText(fileObj)
+      const _this = this
+      reader.onload = function() {
+        console.log(fileObj)
+        _this.convertNginxLog(fileObj.name, this.result)
       }
-      let curlCommand = parseNginxLog(nginxLogPath)
-      this.form.nginxLogPathRes = curlCommand
+    },
+    downloadTxt(nginxLog) {
+      console.log(nginxLog)
     }
   }
 }
