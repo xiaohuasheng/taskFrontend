@@ -44,6 +44,7 @@
 </template>
 <script>
 import {convertLogToCurlCommand} from '../convert'
+import {parseNginxLog} from '../parseNginxLog'
 export default {
   name: 'Convert',
   data() {
@@ -168,11 +169,22 @@ export default {
       let paramList = []
       for (let key in paramStrList) {
         let val = paramStrList[key]
-        let tmp = val.split(':')
-        if (tmp.length < 2) {
-          return data
+        let colonPos = val.indexOf(':')
+        let param = val
+        if (colonPos > -1) {
+          let tmp = val.split(':')
+          if (tmp.length < 2) {
+            console.log('error:' + val)
+            return data
+          }
+          param = tmp[1]
+        } else {
+          // 判断param是否为数字
+          if (isNaN(param)) {
+            param = '"' + param + '"'
+          }
         }
-        paramList.push(tmp[1])
+        paramList.push(param)
       }
       for (let key in paramList) {
         let val = paramList[key]
@@ -241,6 +253,13 @@ export default {
       }
       let curlCommand = convertLogToCurlCommand(eslog)
       this.form.eslogRes = curlCommand
+    },
+    nginxLogPathConvert(nginxLogPath) {
+      if (nginxLogPath.length === 0) {
+        return
+      }
+      let curlCommand = parseNginxLog(nginxLogPath)
+      this.form.nginxLogPathRes = curlCommand
     }
   }
 }
