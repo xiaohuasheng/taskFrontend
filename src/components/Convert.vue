@@ -59,7 +59,9 @@
 </template>
 <script>
 import {convertLogToCurlCommand} from '../convert'
-import { saveAs } from 'file-saver'
+import {convertNginxLog} from '../parseNginxLog'
+import {saveAs} from 'file-saver'
+
 export default {
   name: 'Convert',
   data() {
@@ -83,7 +85,7 @@ export default {
       nginxResult: ''
     }
   },
-  mounted () {
+  mounted() {
     this.historyList = this.getHistory()
   },
   methods: {
@@ -240,29 +242,29 @@ export default {
       // 排序
       this.form.splitRes = items.join('\n')
     },
-    unique (arr) {
+    unique(arr) {
       return Array.from(new Set(arr))
     },
     setLocalHistory(template) {
       let historyList = this.getHistory()
       if (!historyList.includes(template)) {
-          historyList.unshift(template)
-          localStorage.setItem('historyList', JSON.stringify(historyList))
+        historyList.unshift(template)
+        localStorage.setItem('historyList', JSON.stringify(historyList))
       } else {
-          let i = historyList.indexOf(template)
-          historyList.splice(i, 1)
-          historyList.unshift(template)
-          localStorage.setItem('historyList', JSON.stringify(historyList))
+        let i = historyList.indexOf(template)
+        historyList.splice(i, 1)
+        historyList.unshift(template)
+        localStorage.setItem('historyList', JSON.stringify(historyList))
       }
       this.historyList = historyList
       this.$forceUpdate()
     },
     getHistory() {
-        let historyList = []
-        if (JSON.parse(localStorage.getItem('historyList'))) {
-            historyList = JSON.parse(localStorage.getItem('historyList'))
-        }
-        return historyList
+      let historyList = []
+      if (JSON.parse(localStorage.getItem('historyList'))) {
+        historyList = JSON.parse(localStorage.getItem('historyList'))
+      }
+      return historyList
     },
     eslogConvert(eslog) {
       if (eslog.length === 0) {
@@ -282,64 +284,22 @@ export default {
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除`)
     },
-    convertNginxLog(filename, nginxLog) {
-      const lines = nginxLog.split('\n')
-      console.log(lines)
-      const result = []
-      lines.forEach((line) => {
-        const lineArr = line.split(' ')
-        if (lineArr.length < 7) {
-          console.log('无法解析的行', line, 'lineArr.length', lineArr.length)
-          return
-        }
-        let time = lineArr[3] + ' ' + lineArr[4]
-        let method = lineArr[5]
-        let path = lineArr[6]
-        // 取lineArr最后一个元素
-        let requestTime = lineArr[lineArr.length - 1]
-        requestTime = parseFloat(requestTime.replace(/"/g, ''))
-        if (isNaN(requestTime)) {
-          console.log('无法解析请求耗时', line, 'lineArr.length', lineArr.length)
-          return
-        }
-        // 把数据放到对象里，按请求耗时排序，耗时相同按请求时间排序
-        let resultObj = {
-          time: time,
-          method: method + ' ' + path,
-          requestTime: requestTime
-        }
-        result.push(resultObj)
-      })
-      // 对result按请求耗时排序，耗时相同按请求时间排序
-      result.sort((a, b) => {
-        if (a.requestTime === b.requestTime) {
-          return a.time > b.time ? 1 : -1
-        } else {
-          return a.requestTime > b.requestTime ? -1 : 1
-        }
-      })
-      // 转为字符串，输出
-      let resultStr = ''
-      result.forEach((item) => {
-        resultStr += item.time + ' ' + item.method + ' ' + item.requestTime + '\n'
-      })
-      let strData = new Blob([resultStr], { type: 'text/plain;charset=utf-8' })
-      // 文件名加上parsed后缀
-      let fileName = filename.replace(/(\.[^.]+)$/, '_parsed$1')
-      saveAs(strData, fileName)
-    },
     uploadSectionFile(param) {
-      var fileObj = param.file
-      var reader = new FileReader()
+      let fileObj = param.file
+      let reader = new FileReader()
       reader.readAsText(fileObj)
       const _this = this
-      reader.onload = function() {
+      let resultStr = ''
+      reader.onload = function () {
         console.log(fileObj)
-        _this.convertNginxLog(fileObj.name, this.result)
+        console.log(_this)
+        resultStr = convertNginxLog(this.result)
+        let strData = new Blob([resultStr], {type: 'text/plain;charset=utf-8'})
+        // 文件名加上parsed后缀
+        let fileName = fileObj.name.replace(/(\.[^.]+)$/, '_parsed$1')
+        saveAs(strData, fileName)
+        _this.fileList = []
       }
-    },
-    downloadTxt(nginxLog) {
-      console.log(nginxLog)
     }
   }
 }
