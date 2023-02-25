@@ -5,8 +5,12 @@ import Note from '@/components/Note'
 import Convert from '@/components/Convert'
 import WorkUtils from '@/components/WorkUtils'
 import post from '@/components/post'
+import editor from '@/components/editor'
+import mavonEditor from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
 
 Vue.use(Router)
+Vue.use(mavonEditor)
 
 export default new Router({
   routes: [
@@ -39,6 +43,11 @@ export default new Router({
       path: '/post',
       name: 'post',
       component: post
+    },
+    {
+      path: '/editor',
+      name: 'editor',
+      component: editor
     }
   ]
 })

@@ -285,6 +285,7 @@ export default {
       return this.$confirm(`确定移除`)
     },
     uploadSectionFile(param) {
+      // TODO 能让用户确认哪些列是什么信息，以适应不同格式的日志，可以按某列排序
       let fileObj = param.file
       let reader = new FileReader()
       reader.readAsText(fileObj)

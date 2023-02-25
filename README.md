@@ -9,6 +9,9 @@ source ~/.bash_profile
 /opt/lib/node_modules/cnpm/bin/cnpm
 /opt/lib/node_modules/cnpm/bin/cnpm install
 /opt/lib/node_modules/cnpm/bin/cnpm run dev
+
+```
+```shell
 cnpm run build
 tar -zcvf dist.tar.gz dist
 scp dist.tar.gz root@114.215.111.84:/usr/local/openresty/nginx/html/
