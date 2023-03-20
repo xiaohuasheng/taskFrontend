@@ -1,5 +1,9 @@
 <template>
   <el-form ref="form" :model="form" label-width="80px">
+    <el-form-item label="新建task json">
+      <el-input autosize type="textarea" size="medium" v-model="form.taskStr"></el-input>
+      <el-button type="primary" @click="taskConvert(form.taskStr)">转换</el-button>
+    </el-form-item>
     <el-form-item label="nginx日志解析">
       <el-upload
         class="upload-demo"
@@ -60,6 +64,7 @@
 <script>
 import {convertLogToCurlCommand} from '../convert'
 import {convertNginxLog} from '../parseNginxLog'
+import {generateTask} from '../generateTask'
 import {saveAs} from 'file-saver'
 
 export default {
@@ -77,6 +82,7 @@ export default {
         split: '',
         splitRes: '',
         jsonStr: '',
+        taskStr: '',
         eslog: '',
         eslogRes: ''
       },
@@ -220,6 +226,12 @@ export default {
       } else {
         this.form.jsonStr = JSON.stringify(JSON.parse(jsonStr), null, '  ')
       }
+    },
+    taskConvert(jsonStr) {
+      if (jsonStr.length === 0) {
+        return
+      }
+      this.form.taskStr = generateTask(jsonStr)
     },
     splitSortConvert(source) {
       if (source.length === 0) {

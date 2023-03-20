@@ -16,7 +16,7 @@ cnpm run build
 tar -zcvf dist.tar.gz dist
 scp dist.tar.gz root@114.215.111.84:/usr/local/openresty/nginx/html/
 登录服务器
-replace_taskfrontend_dist
+ssh root@114.215.111.84 "replace_taskfrontend_dist"
 ```
 1. 安装
 

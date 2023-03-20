@@ -8,6 +8,7 @@ import post from '@/components/post'
 import editor from '@/components/editor'
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
+import chatgpt from '@/components/chatgpt'
 
 Vue.use(Router)
 Vue.use(mavonEditor)
@@ -48,6 +49,14 @@ export default new Router({
       path: '/editor',
       name: 'editor',
       component: editor
+    },
+    {
+      path: '/chatgpt',
+      name: 'chatgpt',
+      component: chatgpt,
+      meta: {
+        title: 'chatgpt'
+      }
     }
   ]
 })
