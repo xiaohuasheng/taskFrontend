@@ -1,9 +1,20 @@
 <template>
   <el-form ref="form" :model="form" label-width="80px">
     <el-form-item label="新建task json">
-      <el-input autosize type="textarea" size="medium" v-model="form.taskStr"></el-input>
-      <el-button type="primary" @click="taskConvert(form.taskStr)">转换</el-button>
+      <el-button type="primary" @click="taskConvert()">转换</el-button>
+      <el-input placeholder="团队UUID" type="input" size="medium" v-model="form.teamUUID"></el-input>
+      <el-input placeholder="希望创建的工作项的时间和状态变化过程，空格分开，如果不指定状态，就表示不需要状态流转
+2021-08-25 待处理 2021-08-26 处理中
+2021-08-27" autosize type="textarea" size="medium" v-model="form.dateStatus"></el-input>
+      <el-input placeholder="add3接口的参数" type="textarea" size="medium" v-model="form.taskStr"></el-input>
+      <el-input placeholder="stamps/data接口获取团队状态的结果" type="textarea" size="medium" v-model="form.teamStatus"></el-input>
+<!--      分割线-->
+      <el-divider></el-divider>
+      <el-input placeholder="创建工作项参数" type="textarea" size="medium" v-model="form.taskStrRes"></el-input>
+      <el-input placeholder="修改状态SQL" autosize type="textarea" size="medium" v-model="form.statusSql"></el-input>
+      <el-button type="primary" @click="taskConvert()">转换</el-button>
     </el-form-item>
+    <el-divider></el-divider>
     <el-form-item label="nginx日志解析">
       <el-upload
         class="upload-demo"
@@ -19,6 +30,7 @@
         <el-button size="small" type="primary">点击上传</el-button>
       </el-upload>
     </el-form-item>
+    <el-divider></el-divider>
     <el-form-item label="item/graphql参数转换">
       <el-button type="primary" @click="graphqlConvert()">转换</el-button>
       <el-input autosize type="textarea" size="medium" v-model="form.graphql"></el-input>
@@ -82,7 +94,12 @@ export default {
         split: '',
         splitRes: '',
         jsonStr: '',
+        teamUUID: 'WrGnwyb8',
+        dateStatus: '',
         taskStr: '',
+        teamStatus: '{"task_status":{"task_statuses":[{"uuid":"UhxdU8LM","name":"测试提交","name_pinyin":"ce4shi4ti2jiao1","category":"to_do","built_in":false,"detail_type":0,"create_time":1678881369},{"uuid":"X6dh25ML","name":"处理中","name_pinyin":"chu4li3zhong1","category":"in_progress","built_in":true,"detail_type":2004,"create_time":1678881369},{"uuid":"AEtgFL2u","name":"待办","name_pinyin":"dai4ban4","category":"to_do","built_in":true,"detail_type":1007,"create_time":1678881369},{"uuid":"BnPt6Z8J","name":"待处理","name_pinyin":"dai4chu4li3","category":"to_do","built_in":true,"detail_type":1006,"create_time":1678881369},{"uuid":"XoEgDN8V","name":"待回归","name_pinyin":"dai4hui2gui1","category":"in_progress","built_in":false,"detail_type":0,"create_time":1678881369},{"uuid":"8nXPBY3S","name":"挂起","name_pinyin":"gua4qi3","category":"in_progress","built_in":false,"detail_type":0,"create_time":1678881369},{"uuid":"TUyR5Ngi","name":"关闭","name_pinyin":"guan1bi4","category":"done","built_in":true,"detail_type":3008,"create_time":1678881369},{"uuid":"Paa8JtsD","name":"回归不通过","name_pinyin":"hui2gui1bu4tong1guo4","category":"in_progress","built_in":false,"detail_type":0,"create_time":1678881369},{"uuid":"MDgoHf2j","name":"回归通过","name_pinyin":"hui2gui1tong1guo4","category":"done","built_in":false,"detail_type":0,"create_time":1678881369},{"uuid":"AvQ1HsiW","name":"进行中","name_pinyin":"jin4xing2zhong1","category":"in_progress","built_in":true,"detail_type":2003,"create_time":1678881369},{"uuid":"CLnnver1","name":"实现中","name_pinyin":"shi2xian4zhong1","category":"in_progress","built_in":true,"detail_type":2002,"create_time":1678881369},{"uuid":"XJ3kjw83","name":"完成","name_pinyin":"wan2cheng2","category":"done","built_in":true,"detail_type":3009,"create_time":1678881369},{"uuid":"CE8SNLbp","name":"未发布","name_pinyin":"wei4fa1bu4","category":"to_do","built_in":true,"detail_type":1005,"create_time":1678881369},{"uuid":"57o5LzJd","name":"未激活","name_pinyin":"wei4ji1huo2","category":"to_do","built_in":true,"detail_type":1002,"create_time":1678881369},{"uuid":"4fXcjHJj","name":"未开始","name_pinyin":"wei4kai1shi3","category":"to_do","built_in":true,"detail_type":1001,"create_time":1678881369},{"uuid":"7YVUN5YR","name":"修复中","name_pinyin":"xiu1fu4zhong1","category":"in_progress","built_in":false,"detail_type":0,"create_time":1678881369},{"uuid":"Ldnmbcnz","name":"已发布","name_pinyin":"yi3fa1bu4","category":"done","built_in":true,"detail_type":3004,"create_time":1678881369},{"uuid":"6PDWwFu1","name":"已关单","name_pinyin":"yi3guan1dan1","category":"done","built_in":true,"detail_type":3006,"create_time":1678881369},{"uuid":"6K9sSTTK","name":"已解决","name_pinyin":"yi3jie3jue2","category":"done","built_in":true,"detail_type":3007,"create_time":1678881369},{"uuid":"ik9GgK3P","name":"已拒绝","name_pinyin":"yi3ju4jue2","category":"done","built_in":true,"detail_type":3005,"create_time":1678881369},{"uuid":"CrEXAVmW","name":"已确认","name_pinyin":"yi3que4ren4","category":"to_do","built_in":true,"detail_type":1004,"create_time":1678881369},{"uuid":"FJyZJm1k","name":"已实现","name_pinyin":"yi3shi2xian4","category":"done","built_in":true,"detail_type":3002,"create_time":1678881369},{"uuid":"AG5RPoHT","name":"已完成","name_pinyin":"yi3wan2cheng2","category":"done","built_in":true,"detail_type":3003,"create_time":1678881369},{"uuid":"12ZZvq55","name":"已修复","name_pinyin":"yi3xiu1fu4","category":"in_progress","built_in":true,"detail_type":2001,"create_time":1678881369},{"uuid":"29ciQvjM","name":"已验证","name_pinyin":"yi3yan4zheng4","category":"done","built_in":true,"detail_type":3001,"create_time":1678881369},{"uuid":"CmNnx8T1","name":"重新打开","name_pinyin":"zhong4xin1da3kai1","category":"to_do","built_in":true,"detail_type":1003,"create_time":1678881369}],"server_update_stamp":1678936043910459}}',
+        teamStrRes: '',
+        statusSql: '',
         eslog: '',
         eslogRes: ''
       },
@@ -227,11 +244,26 @@ export default {
         this.form.jsonStr = JSON.stringify(JSON.parse(jsonStr), null, '  ')
       }
     },
-    taskConvert(jsonStr) {
-      if (jsonStr.length === 0) {
+    taskConvert() {
+      // this.form.taskStr = '{"tasks":[{"uuid":"AYuecVfJHOEjGZky","owner":"AYuecVfJ","assign":"AYuecVfJ","summary":"today","parent_uuid":"","field_values":[{"field_uuid":"field004","type":8,"value":"AYuecVfJ"},{"field_uuid":"field012","type":1,"value":"ATQz4y4x"},{"field_uuid":"field031","type":1,"value":null},{"field_uuid":"field011","type":7,"value":null},{"field_uuid":"field038","type":1,"value":null},{"field_uuid":"field041","type":1,"value":null},{"field_uuid":"field040","type":8,"value":null},{"field_uuid":"RmvG6a2Y","type":2,"value":""},{"field_uuid":"5qobnM6i","type":1,"value":null},{"field_uuid":"JFoogWSG","type":8,"value":null},{"field_uuid":"VCjgrHNF","type":7,"value":null},{"field_uuid":"UphUjBb2","type":15,"value":""},{"field_uuid":"UJV4tNci","type":16,"value":null},{"field_uuid":"PaZAmqL7","type":13,"value":null},{"field_uuid":"VuGHLaEM","type":50,"value":null},{"field_uuid":"51nZ17or","type":4,"value":null},{"field_uuid":"BsBwUhih","type":5,"value":null},{"field_uuid":"7sjNWa1i","type":6,"value":null},{"field_uuid":"QHFZzTyr","type":3,"value":null}],"project_uuid":"AYuecVfJDCNBKyOM","issue_type_uuid":"H45miQMw","link_source_task":null,"watchers":["AYuecVfJ"]}]}'
+      // this.form.teamUUID = 'WrGnwyb8'
+      // this.form.dateStatus = '2021-08-25 待处理\n' +
+      //   '2021-08-27 处理中\n'
+      // this.form.dateStatus = '2021-08-25 待处理 2021-08-27 处理中 2021-08-29 已解决 2021-08-31 已关单\n' +
+      //   '2021-08-25 待处理 2021-08-27 处理中 2021-08-31 已解决\n' +
+      //   '2021-08-31 待处理\n' +
+      //   '2021-08-31 待处理\n' +
+      //   '2021-08-31 待处理 2021-09-01 已解决\n' +
+      //   '2021-09-01 待处理\n' +
+      //   '2021-09-01 待处理\n'
+      // this.form.dateStatus = '2021-08-25 待处理 2021-08-27 处理中 2021-08-29 已解决 2021-08-31 已关单'
+      // this.form.teamStatus = '{"task_status":{"task_statuses":[{"uuid":"UhxdU8LM","name":"测试提交","name_pinyin":"ce4shi4ti2jiao1","category":"to_do","built_in":false,"detail_type":0,"create_time":1678881369},{"uuid":"X6dh25ML","name":"处理中","name_pinyin":"chu4li3zhong1","category":"in_progress","built_in":true,"detail_type":2004,"create_time":1678881369},{"uuid":"AEtgFL2u","name":"待办","name_pinyin":"dai4ban4","category":"to_do","built_in":true,"detail_type":1007,"create_time":1678881369},{"uuid":"BnPt6Z8J","name":"待处理","name_pinyin":"dai4chu4li3","category":"to_do","built_in":true,"detail_type":1006,"create_time":1678881369},{"uuid":"XoEgDN8V","name":"待回归","name_pinyin":"dai4hui2gui1","category":"in_progress","built_in":false,"detail_type":0,"create_time":1678881369},{"uuid":"8nXPBY3S","name":"挂起","name_pinyin":"gua4qi3","category":"in_progress","built_in":false,"detail_type":0,"create_time":1678881369},{"uuid":"TUyR5Ngi","name":"关闭","name_pinyin":"guan1bi4","category":"done","built_in":true,"detail_type":3008,"create_time":1678881369},{"uuid":"Paa8JtsD","name":"回归不通过","name_pinyin":"hui2gui1bu4tong1guo4","category":"in_progress","built_in":false,"detail_type":0,"create_time":1678881369},{"uuid":"MDgoHf2j","name":"回归通过","name_pinyin":"hui2gui1tong1guo4","category":"done","built_in":false,"detail_type":0,"create_time":1678881369},{"uuid":"AvQ1HsiW","name":"进行中","name_pinyin":"jin4xing2zhong1","category":"in_progress","built_in":true,"detail_type":2003,"create_time":1678881369},{"uuid":"CLnnver1","name":"实现中","name_pinyin":"shi2xian4zhong1","category":"in_progress","built_in":true,"detail_type":2002,"create_time":1678881369},{"uuid":"XJ3kjw83","name":"完成","name_pinyin":"wan2cheng2","category":"done","built_in":true,"detail_type":3009,"create_time":1678881369},{"uuid":"CE8SNLbp","name":"未发布","name_pinyin":"wei4fa1bu4","category":"to_do","built_in":true,"detail_type":1005,"create_time":1678881369},{"uuid":"57o5LzJd","name":"未激活","name_pinyin":"wei4ji1huo2","category":"to_do","built_in":true,"detail_type":1002,"create_time":1678881369},{"uuid":"4fXcjHJj","name":"未开始","name_pinyin":"wei4kai1shi3","category":"to_do","built_in":true,"detail_type":1001,"create_time":1678881369},{"uuid":"7YVUN5YR","name":"修复中","name_pinyin":"xiu1fu4zhong1","category":"in_progress","built_in":false,"detail_type":0,"create_time":1678881369},{"uuid":"Ldnmbcnz","name":"已发布","name_pinyin":"yi3fa1bu4","category":"done","built_in":true,"detail_type":3004,"create_time":1678881369},{"uuid":"6PDWwFu1","name":"已关单","name_pinyin":"yi3guan1dan1","category":"done","built_in":true,"detail_type":3006,"create_time":1678881369},{"uuid":"6K9sSTTK","name":"已解决","name_pinyin":"yi3jie3jue2","category":"done","built_in":true,"detail_type":3007,"create_time":1678881369},{"uuid":"ik9GgK3P","name":"已拒绝","name_pinyin":"yi3ju4jue2","category":"done","built_in":true,"detail_type":3005,"create_time":1678881369},{"uuid":"CrEXAVmW","name":"已确认","name_pinyin":"yi3que4ren4","category":"to_do","built_in":true,"detail_type":1004,"create_time":1678881369},{"uuid":"FJyZJm1k","name":"已实现","name_pinyin":"yi3shi2xian4","category":"done","built_in":true,"detail_type":3002,"create_time":1678881369},{"uuid":"AG5RPoHT","name":"已完成","name_pinyin":"yi3wan2cheng2","category":"done","built_in":true,"detail_type":3003,"create_time":1678881369},{"uuid":"12ZZvq55","name":"已修复","name_pinyin":"yi3xiu1fu4","category":"in_progress","built_in":true,"detail_type":2001,"create_time":1678881369},{"uuid":"29ciQvjM","name":"已验证","name_pinyin":"yi3yan4zheng4","category":"done","built_in":true,"detail_type":3001,"create_time":1678881369},{"uuid":"CmNnx8T1","name":"重新打开","name_pinyin":"zhong4xin1da3kai1","category":"to_do","built_in":true,"detail_type":1003,"create_time":1678881369}],"server_update_stamp":1678936043910459}}'
+      if (this.form.taskStr.length === 0) {
         return
       }
-      this.form.taskStr = generateTask(jsonStr)
+      let res = generateTask(this.form.taskStr, this.form.dateStatus, this.form.teamUUID, this.form.teamStatus)
+      this.form.taskStrRes = res.json
+      this.form.statusSql = res.sql
     },
     splitSortConvert(source) {
       if (source.length === 0) {
