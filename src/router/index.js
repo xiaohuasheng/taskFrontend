@@ -5,6 +5,7 @@ import Note from '@/components/Note'
 import Convert from '@/components/Convert'
 import WorkUtils from '@/components/WorkUtils'
 import post from '@/components/post'
+import think from '@/components/think'
 import editor from '@/components/editor'
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
@@ -56,6 +57,14 @@ export default new Router({
       component: chatgpt,
       meta: {
         title: 'chatgpt'
+      }
+    },
+    {
+      path: '/think',
+      name: 'think',
+      component: think,
+      meta: {
+        title: 'Thinking'
       }
     }
   ]
