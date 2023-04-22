@@ -2,6 +2,8 @@ export function convertNginxLog(nginxLog) {
   const lines = nginxLog.split('\n')
   console.log(lines)
   const result = []
+  // 统计 path 的请求次数
+  const pathCount = {}
   lines.forEach((line) => {
     const lineArr = line.split(' ')
     if (lineArr.length < 7) {
@@ -12,6 +14,12 @@ export function convertNginxLog(nginxLog) {
     let time = lineArr[3] + ' ' + lineArr[4]
     let method = lineArr[5]
     let path = lineArr[6]
+    // 统计 path 的请求次数
+    if (pathCount[path]) {
+      pathCount[path]++
+    } else {
+      pathCount[path] = 1
+    }
     // 127.0.0.1 - - [21/Feb/2023:23:59:05 +0800] "GET /api/project/team/2vtyv8Uu/task/WPf96zgeCHUKVMFw/messages HTTP/1.1" 200 4617 "-" "Go-http-client/1.1" "192.168.24.5" "0.011"
     // 取状态码
     let status = lineArr[8]
@@ -56,6 +64,15 @@ export function convertNginxLog(nginxLog) {
     }
   })
   // 对result按path排序，path相同按请求时间排序
+  // result.sort((a, b) => {
+  //   if (a.requestTime === b.requestTime) {
+  //     return a.time > b.time ? 1 : -1
+  //   } else {
+  //     return a.requestTime > b.requestTime ? -1 : 1
+  //   }
+  // })
+  // 对result按path排序，path相同按请求时间排序
+  // console.log('pathCount', pathCount)
   // result.sort((a, b) => {
   //   if (a.method === b.method) {
   //     return a.time > b.time ? 1 : -1
