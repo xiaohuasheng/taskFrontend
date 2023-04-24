@@ -11,15 +11,6 @@ import 'vue-layer/lib/vue-layer.css'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
-import Viewer from 'v-viewer'
-import 'viewerjs/dist/viewer.css'
-Vue.use(Viewer)
-Viewer.setDefaults({
-  // 需要配置的属性 注意属性并没有引号
-  title: false,
-  toolbar: false
-})
-
 Vue.use(ElementUI)
 Vue.use(VueAxios, axios)
 Vue.config.productionTip = false

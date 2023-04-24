@@ -5,7 +5,7 @@
       <body>
       <header>
         <div class="logo">
-          <h2>Think</h2>
+          <h2>Thinking</h2>
         </div>
       </header>
       <div class="memos">
@@ -13,9 +13,9 @@
           <div class="time">{{ item.create_time }}</div>
           <div v-if="item.type === 'text'" class="content"><p>{{ item.content }}</p></div>
           <div v-if="item.type === 'image'" class="content">
-            <viewer>
-              <img :src="item.content" width="100" height="100"/>
-            </viewer>
+                <div class="images" v-viewer="{movable: false}">
+                  <img :src="'http://task.xiaohuasheng.cc/api/media?id=' + item.media_id" width="100" height="100">
+                </div>
           </div>
         </div>
       </div>
@@ -26,6 +26,15 @@
   </el-container>
 </template>
 <script>
+import 'viewerjs/dist/viewer.css'
+import Viewer from 'v-viewer'
+import Vue from 'vue'
+Viewer.setDefaults({
+  // 需要配置的属性 注意属性并没有引号
+  title: false,
+  toolbar: false
+})
+Vue.use(Viewer)
 export default {
   name: 'think',
   data() {
@@ -41,26 +50,6 @@ export default {
         this.$message(response.data.msg)
       } else {
         this.posts = response.data.data
-        // 异步多线程去请求http://task.xiaohuasheng.cc/api/media?id=media_id，然后把图片放到content里面
-        let _this = this
-        this.posts.forEach(function (item) {
-          if (item.type === 'image') {
-            console.log(item.media_id)
-            _this.axios.get('http://task.xiaohuasheng.cc/api/media?id=' + item.media_id).then(response => {
-              if (response.data.code !== 0) {
-                _this.$message(response.data.msg)
-              } else {
-                item.content = 'data:image/jpeg;base64,' + response.data.data
-                // item.descImgs = [
-                //   'data:image/jpeg;base64,' + response.data.data
-                // ]
-              }
-            }).catch(function (error) { // 请求失败处理
-              _this.$message('服务端出错')
-              console.log(error)
-            })
-          }
-        })
       }
     }).catch(function (error) { // 请求失败处理
       this.$message('服务端出错')
