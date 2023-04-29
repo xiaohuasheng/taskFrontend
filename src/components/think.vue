@@ -5,19 +5,11 @@
       <body>
       <header>
         <div class="logo">
-          <h2>Thinking</h2>
+<!--          <h2>Thinking</h2>-->
         </div>
       </header>
       <div class="memos">
-        <div v-for="item in posts" v-bind:key="item.id" class="memo">
-          <div class="time">{{ item.create_time }}</div>
-          <div v-if="item.type === 'text'" class="content"><p>{{ item.content }}</p></div>
-          <div v-if="item.type === 'image'" class="content">
-            <div class="images" v-viewer="{movable: false}">
-              <img :src="'http://task.xiaohuasheng.cc/api/media?id=' + item.media_id" width="100" height="100">
-            </div>
-          </div>
-        </div>
+        <think-operation v-for="item in posts" v-bind:key="item.id" v-bind:think="item"></think-operation>
       </div>
       </body>
       </html>
@@ -29,6 +21,7 @@
 import 'viewerjs/dist/viewer.css'
 import Viewer from 'v-viewer'
 import Vue from 'vue'
+import thinkOperation from './thinkOperation.vue'
 
 Viewer.setDefaults({
   // 需要配置的属性 注意属性并没有引号
@@ -38,6 +31,9 @@ Viewer.setDefaults({
 Vue.use(Viewer)
 export default {
   name: 'think',
+  components: {
+    thinkOperation
+  },
   data() {
     return {
       posts: [],
@@ -99,10 +95,10 @@ body {
   background: #fafafa;
 }
 
-header .logo {
-  text-align: center;
-  border-bottom: 1px solid #efefef;
-}
+/*header .logo {*/
+/*  text-align: center;*/
+/*  border-bottom: 1px solid #efefef;*/
+/*}*/
 
 header .top {
   display: flex;
@@ -112,7 +108,7 @@ header .top {
 
 header .logo,
 header .top .user {
-  padding: 40px 0;
+  /*padding: 40px 0;*/
 }
 
 header .top .user .name {
