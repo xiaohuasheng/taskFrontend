@@ -98,6 +98,10 @@ export function parseMysqlSlowLog(log) {
       }
     }
   }
+  // 按roseSent排序
+  results.sort((a, b) => {
+    return b.rowsSent - a.rowsSent
+  })
   // 把results转换为字符串，一行一个对象
   let str = ''
   for (let i = 0; i < results.length; i++) {

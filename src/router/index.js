@@ -18,8 +18,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'workUtils',
-      component: WorkUtils
+      name: 'convert',
+      component: Convert
     },
     {
       path: '/task',

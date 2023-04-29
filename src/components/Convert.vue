@@ -53,6 +53,7 @@
       <el-input autosize placeholder="一行一个" type="textarea" size="medium" v-model="form.tplValue"></el-input>
       <el-input autosize type="textarea" v-model="form.tplRes"></el-input>
       <el-button type="primary" @click="templateConvert(form.tpl, form.tplValue)">转换</el-button>
+      <el-button type="primary" @click="toOneRow(form.tplRes)">变成一行</el-button>
     </el-form-item>
     <el-divider></el-divider>
     <el-form-item label="json压缩">
@@ -146,6 +147,14 @@ export default {
       }
       let strList = s.split('\n')
       this.form.graphql = strList.join('\\n')
+    },
+    toOneRow(res) {
+      if (res.length <= 0) {
+        return ''
+      }
+      // 去掉换行符
+      let str = res.replace(/\n/g, '')
+      this.form.tplRes = str
     },
     templateConvert(tpl, tplValue) {
       if (tpl.length <= 0 || tplValue.length <= 0) {

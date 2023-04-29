@@ -1,6 +1,6 @@
 export function convertNginxLog(nginxLog) {
   const lines = nginxLog.split('\n')
-  console.log(lines)
+  // console.log(lines)
   const result = []
   // 统计 path 的请求次数
   const pathCount = {}
@@ -29,7 +29,7 @@ export function convertNginxLog(nginxLog) {
     // if (status === '200') {
     //   return
     // }
-    console.log('status', status)
+    // console.log('status', status)
     // 如果 status 不是 605,612,615,616,跳过
     // if (status !== '605' && status !== '612' && status !== '615' && status !== '616') {
     //   return
@@ -83,6 +83,7 @@ export function convertNginxLog(nginxLog) {
 
   // 转为字符串，输出
   let resultStr = ''
+  console.log('result.length', result.length)
   result.forEach((item) => {
     // 把item对象合并为字符串，空格分开
     resultStr += Object.values(item).join(' ') + '\n'

@@ -13,9 +13,9 @@
           <div class="time">{{ item.create_time }}</div>
           <div v-if="item.type === 'text'" class="content"><p>{{ item.content }}</p></div>
           <div v-if="item.type === 'image'" class="content">
-                <div class="images" v-viewer="{movable: false}">
-                  <img :src="'http://task.xiaohuasheng.cc/api/media?id=' + item.media_id" width="100" height="100">
-                </div>
+            <div class="images" v-viewer="{movable: false}">
+              <img :src="'http://task.xiaohuasheng.cc/api/media?id=' + item.media_id" width="100" height="100">
+            </div>
           </div>
         </div>
       </div>
@@ -29,6 +29,7 @@
 import 'viewerjs/dist/viewer.css'
 import Viewer from 'v-viewer'
 import Vue from 'vue'
+
 Viewer.setDefaults({
   // 需要配置的属性 注意属性并没有引号
   title: false,
@@ -39,24 +40,52 @@ export default {
   name: 'think',
   data() {
     return {
-      posts: [
-      ]
+      posts: [],
+      currentPage: 1,
+      totalPages: 1,
+      isLoading: false,
+      isEnd: false
     }
   },
   mounted() {
-    let thinkID = this.$route.query.id
-    this.axios.get('http://task.xiaohuasheng.cc/api/think?id=' + thinkID).then(response => {
-      if (response.data.code !== 0) {
-        this.$message(response.data.msg)
-      } else {
-        this.posts = response.data.data
-      }
-    }).catch(function (error) { // 请求失败处理
-      this.$message('服务端出错')
-      console.log(error)
-    })
+    this.loadPage(this.currentPage)
+    window.addEventListener('scroll', this.handleScroll)
   },
-  methods: {}
+  destroyed() {
+    window.removeEventListener('scroll', this.handleScroll)
+  },
+  methods: {
+    loadPage(page) {
+      let thinkID = this.$route.query.id
+      this.isLoading = true
+      this.axios.get('http://task.xiaohuasheng.cc/api/think?id=' + thinkID + '&page=' + page).then(response => {
+        if (response.data.code !== 0) {
+          this.$message(response.data.msg)
+        } else {
+          this.posts = this.posts.concat(response.data.data.list)
+          let total = response.data.data.total
+          // total 除以 10 向上取整
+          this.totalPages = Math.ceil(total / 10)
+          if (this.currentPage === this.totalPages) {
+            this.isEnd = true
+          }
+        }
+        this.isLoading = false
+      }).catch(function (error) { // 请求失败处理
+        this.$message('服务端出错')
+        console.log(error)
+        this.isLoading = false
+      })
+    },
+    handleScroll() {
+      const scrollHeight = document.documentElement.scrollHeight
+      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+      const clientHeight = document.documentElement.clientHeight
+      if (!this.isLoading && scrollTop + clientHeight >= scrollHeight - 100 && this.currentPage < this.totalPages) {
+        this.loadPage(++this.currentPage)
+      }
+    }
+  }
 }
 
 </script>
