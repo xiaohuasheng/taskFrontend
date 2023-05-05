@@ -51,9 +51,11 @@
       <el-button type="primary" @click="templateConvert(form.tpl, form.tplValue)">转换</el-button>
       <el-input autosize placeholder="\1" type="textarea" size="medium" v-model="form.tpl"></el-input>
       <el-input autosize placeholder="一行一个" type="textarea" size="medium" v-model="form.tplValue"></el-input>
+      <el-radio v-model="form.tplToOneRow" label="true">变为一行</el-radio>
+      <el-radio v-model="form.tplToOneRow" label="false">换行</el-radio>
       <el-input autosize type="textarea" v-model="form.tplRes"></el-input>
-      <el-button type="primary" @click="templateConvert(form.tpl, form.tplValue)">转换</el-button>
-      <el-button type="primary" @click="toOneRow(form.tplRes)">变成一行</el-button>
+      <el-button type="primary" @click="templateConvert(form.tpl, form.tplValue, form.tplToOneRow)">转换</el-button>
+<!--      <el-button type="primary" @click="toOneRow(form.tplRes)">变成一行</el-button>-->
     </el-form-item>
     <el-divider></el-divider>
     <el-form-item label="json压缩">
@@ -92,6 +94,7 @@ export default {
         tpl: '',
         tplValue: '',
         tplRes: '',
+        tplToOneRow: 'true',
         split: '',
         splitRes: '',
         jsonStr: '',
@@ -156,7 +159,7 @@ export default {
       let str = res.replace(/\n/g, '')
       this.form.tplRes = str
     },
-    templateConvert(tpl, tplValue) {
+    templateConvert(tpl, tplValue, toOneRow) {
       if (tpl.length <= 0 || tplValue.length <= 0) {
         return ''
       }
@@ -178,7 +181,11 @@ export default {
         let tmp = tpl.replaceAll('\\1', items[key])
         resArr.push(tmp)
       }
-      this.form.tplRes = resArr.join(spiltCh)
+      let resStr = resArr.join(spiltCh)
+      if (toOneRow === 'true') {
+        resStr = resStr.replace(/\n/g, '')
+      }
+      this.form.tplRes = resStr
       this.setLocalHistory(tpl)
     },
     sqlConvert(data) {

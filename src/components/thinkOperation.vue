@@ -23,12 +23,7 @@
     color: #7d7d7d;
     font-size: 14px;
 ">
-<!--              <svg width="16px" height="16px" viewBox="0 0 16 16" fill="currentColor"-->
-              <!--                   xmlns="http://www.w3.org/2000/svg">-->
-              <!--                    <path fill-rule="evenodd"-->
-              <!--                          d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z">-->
-              <!--                    </path>-->
-              <!--            </svg>-->
+<!--              https://iconsvg.xyz/-->
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6"
                                                                                                           x2="6"
@@ -39,12 +34,18 @@
           </span>
           </div>
         </div>
-        <div v-if="think.type === 'text'" class="content">
+        <div v-if="think.type === 'text' || think.type === 'voice'" class="content">
           <div class="richText" style="max-height: none;"><p>{{ think.content }}</p></div>
         </div>
         <div v-if="think.type === 'image'" class="content">
           <div class="images" v-viewer="{movable: false}">
             <img :src="'http://task.xiaohuasheng.cc/api/media?id=' + think.media_id" width="100" height="100">
+          </div>
+        </div>
+        <div class="content" v-if="think.type === 'voice'" @click="openRecording(think.media_id)"
+             style="cursor: pointer">
+          <div class="voice">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
           </div>
         </div>
       </div>
@@ -53,6 +54,7 @@
 </template>
 
 <script>
+var BenzAMRRecorder = require('benz-amr-recorder')
 export default {
   name: 'thinkOperation',
   props: {
@@ -63,10 +65,38 @@ export default {
   },
   data() {
     return {
-      count: 0
+      playRec: null,
+      voiceActive: null
     }
   },
   methods: {
+    openRecording(mediaID) {
+      let url = 'http://task.xiaohuasheng.cc/api/media?type=voice&id=' + mediaID
+      let vm = this
+      console.log('open recording')
+      if (vm.playRec !== null && vm.playRec.isPlaying()) {
+        console.log('enter stop play')
+        vm.stopPlayVoice()
+        return
+      }
+      vm.playRec = new BenzAMRRecorder()
+      vm.playRec.initWithUrl(url).then(function () {
+        vm.playRec.play()
+        vm.playRec.onEnded(function () {
+          vm.voiceActive = null
+        })
+      }).catch((e) => {
+        console.log(e)
+        vm.$message.error('播放录音失败')
+      })
+    },
+    stopPlayVoice() {
+      if (this.playRec.isPlaying()) {
+        console.log('stop play')
+        this.playRec.stop()
+      }
+      this.playRec = null
+    },
     deleteThink(think) {
       // 截取 think.content 的前 10 个字符
       let content = think.content.substring(0, 10)

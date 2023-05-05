@@ -56,14 +56,6 @@ export function convertNginxLog(nginxLog) {
     result.push(resultObj)
   })
   // 对result按请求耗时排序，耗时相同按请求时间排序
-  result.sort((a, b) => {
-    if (a.requestTime === b.requestTime) {
-      return a.time > b.time ? 1 : -1
-    } else {
-      return a.requestTime > b.requestTime ? -1 : 1
-    }
-  })
-  // 对result按path排序，path相同按请求时间排序
   // result.sort((a, b) => {
   //   if (a.requestTime === b.requestTime) {
   //     return a.time > b.time ? 1 : -1
@@ -72,7 +64,15 @@ export function convertNginxLog(nginxLog) {
   //   }
   // })
   // 对result按path排序，path相同按请求时间排序
-  // console.log('pathCount', pathCount)
+  result.sort((a, b) => {
+    if (a.requestTime === b.requestTime) {
+      return a.time > b.time ? 1 : -1
+    } else {
+      return a.requestTime > b.requestTime ? -1 : 1
+    }
+  })
+  // 对result按path排序，path相同按请求时间排序
+  console.log('pathCount', pathCount)
   // result.sort((a, b) => {
   //   if (a.method === b.method) {
   //     return a.time > b.time ? 1 : -1
