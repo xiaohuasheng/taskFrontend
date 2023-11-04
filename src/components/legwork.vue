@@ -5,11 +5,33 @@
       <body>
       <header>
         <div class="logo">
-<!--          <h2>Thinking</h2>-->
+<!--          <h2>我的任务</h2>-->
         </div>
       </header>
       <div class="memos">
-        <think-operation v-for="item in posts" v-bind:key="item.id" v-bind:think="item"></think-operation>
+        <el-form ref="form" :model="task" label-width="80px">
+          <el-form-item label="描述">
+            <el-input placeholder="" autosize type="textarea" size="medium" v-model="task.description"></el-input>
+          </el-form-item>
+          <el-form-item label="任务起点">
+            <el-input type="input" v-model="task.startingPoint"></el-input>
+          </el-form-item>
+          <el-form-item label="任务终点">
+            <el-input type="input" v-model="task.endPoint"></el-input>
+          </el-form-item>
+          <el-form-item label="联系方式">
+            <el-input placeholder="写下您的手机号方便骑手通知您" autosize type="textarea" size="medium" v-model="task.contact"></el-input>
+          </el-form-item>
+          <el-form-item label="奖励金币">
+            <el-input type="input" v-model="task.reward"></el-input>
+          </el-form-item>
+          <el-form-item label="任务状态">
+            <el-input type="input" v-model="task.status" disabled="disabled"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="updateTask()">修改</el-button>
+          </el-form-item>
+        </el-form>
       </div>
       </body>
       </html>
@@ -18,67 +40,85 @@
   </el-container>
 </template>
 <script>
-import 'viewerjs/dist/viewer.css'
-import Viewer from 'v-viewer'
-import Vue from 'vue'
-
-Viewer.setDefaults({
-  // 需要配置的属性 注意属性并没有引号
-  title: false,
-  toolbar: false
-})
-Vue.use(Viewer)
 export default {
   name: 'legwork',
-  components: {
-  },
   data() {
     return {
-      posts: [],
-      currentPage: 1,
-      totalPages: 1,
-      isLoading: false,
-      isEnd: false
+      task: {
+        taskID: 0,
+        description: '',
+        startingPoint: '',
+        endPoint: '',
+        contact: '',
+        reward: 0,
+        status: '',
+        runnerName: ''
+      }
     }
   },
+  beforeCreate() {
+    console.log('beforeCreate')
+  },
+  created() {
+    console.log('created')
+  },
+  beforeMount() {
+    console.log('beforeMount')
+  },
+  beforeUpdate() {
+    console.log('beforeUpdate')
+  },
+  updated() {
+    console.log('updated')
+  },
   mounted() {
-    this.loadPage(this.currentPage)
-    window.addEventListener('scroll', this.handleScroll)
+    console.log('mounted')
+    this.loadPage()
+  },
+  activated() {
+    console.log('activated')
+  },
+  deactivated() {
+    console.log('deactivated')
+  },
+  errorCaptured() {
+    console.log('errorCaptured')
   },
   destroyed() {
-    window.removeEventListener('scroll', this.handleScroll)
+    console.log('destroyed')
+  },
+  beforeDestroy() {
+    console.log('beforeDestroy')
   },
   methods: {
-    loadPage(page) {
+    loadPage() {
       let userID = this.$route.query.id
       let taskID = this.$route.query.task_id
-      this.isLoading = true
       this.axios.get('http://task.xiaohuasheng.cc/api/legwork?id=' + userID + '&task_id=' + taskID).then(response => {
         if (response.data.code !== 0) {
           this.$message(response.data.msg)
         } else {
-          this.posts = this.posts.concat(response.data.data.list)
-          let total = response.data.data.total
-          // total 除以 10 向上取整
-          this.totalPages = Math.ceil(total / 10)
-          if (this.currentPage === this.totalPages) {
-            this.isEnd = true
-          }
+          this.task = response.data.data
         }
-        this.isLoading = false
       }).catch(function (error) { // 请求失败处理
         this.$message('服务端出错')
         console.log(error)
-        this.isLoading = false
       })
     },
-    handleScroll() {
-      const scrollHeight = document.documentElement.scrollHeight
-      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-      const clientHeight = document.documentElement.clientHeight
-      if (!this.isLoading && scrollTop + clientHeight >= scrollHeight - 100 && this.currentPage < this.totalPages) {
-        this.loadPage(++this.currentPage)
-      }
+    updateTask() {
+      let userID = this.$route.query.id
+      this.axios.post('http://task.xiaohuasheng.cc/api/legwork?id=' + userID + '&task_id=' + this.task.taskID,
+        this.task).then(data => {
+        if (data.data.code === 0) {
+          console.log(data)
+          this.$message('修改成功')
+        } else {
+          console.log(data)
+          this.$message('修改失败')
+        }
+      }).catch(error => {
+        console.log(error)
+      })
     }
   }
 }
