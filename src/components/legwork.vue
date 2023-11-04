@@ -114,7 +114,7 @@ export default {
           this.$message('修改成功')
         } else {
           console.log(data)
-          this.$message('修改失败')
+          this.$message('修改失败: ' + data.data.msg)
         }
       }).catch(error => {
         console.log(error)
