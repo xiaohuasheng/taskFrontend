@@ -5,7 +5,7 @@
       <body>
       <header>
         <div class="logo">
-<!--          <h2>我的任务</h2>-->
+          <!--          <h2>我的任务</h2>-->
         </div>
       </header>
       <div class="memos">
@@ -20,7 +20,8 @@
             <el-input type="input" v-model="task.endPoint"></el-input>
           </el-form-item>
           <el-form-item label="联系方式">
-            <el-input placeholder="写下您的手机号方便骑手通知您" autosize type="textarea" size="medium" v-model="task.contact"></el-input>
+            <el-input placeholder="写下您的手机号方便骑手通知您" autosize type="textarea" size="medium"
+                      v-model="task.contact"></el-input>
           </el-form-item>
           <el-form-item label="奖励金币">
             <el-input type="input" v-model="task.reward"></el-input>
@@ -41,7 +42,7 @@
 </template>
 <script>
 export default {
-  name: 'legwork',
+  name: 'taskDetail',
   data() {
     return {
       task: {
@@ -56,45 +57,15 @@ export default {
       }
     }
   },
-  beforeCreate() {
-    console.log('beforeCreate')
-  },
-  created() {
-    console.log('created')
-  },
-  beforeMount() {
-    console.log('beforeMount')
-  },
-  beforeUpdate() {
-    console.log('beforeUpdate')
-  },
-  updated() {
-    console.log('updated')
-  },
   mounted() {
     console.log('mounted')
     this.loadPage()
-  },
-  activated() {
-    console.log('activated')
-  },
-  deactivated() {
-    console.log('deactivated')
-  },
-  errorCaptured() {
-    console.log('errorCaptured')
-  },
-  destroyed() {
-    console.log('destroyed')
-  },
-  beforeDestroy() {
-    console.log('beforeDestroy')
   },
   methods: {
     loadPage() {
       let userID = this.$route.query.id
       let taskID = this.$route.query.task_id
-      this.axios.get('http://task.xiaohuasheng.cc/api/legwork?id=' + userID + '&task_id=' + taskID).then(response => {
+      this.axios.get('http://task.xiaohuasheng.cc/api/legwork/task/' + taskID + '?id=' + userID).then(response => {
         if (response.data.code !== 0) {
           this.$message(response.data.msg)
         } else {
@@ -107,7 +78,7 @@ export default {
     },
     updateTask() {
       let userID = this.$route.query.id
-      this.axios.post('http://task.xiaohuasheng.cc/api/legwork?id=' + userID + '&task_id=' + this.task.taskID,
+      this.axios.post('http://task.xiaohuasheng.cc/api/legwork/task/' + this.task.taskID + '?id=' + userID,
         this.task).then(data => {
         if (data.data.code === 0) {
           console.log(data)

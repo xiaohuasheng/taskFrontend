@@ -4,7 +4,8 @@ import Convert from '@/components/Convert'
 import WorkUtils from '@/components/WorkUtils'
 import post from '@/components/post'
 import think from '@/components/think'
-import legwork from '@/components/legwork'
+import taskList from '@/components/legwork/taskList'
+import taskDetail from '@/components/legwork/taskDetail'
 import editor from '@/components/editor'
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
@@ -57,11 +58,19 @@ export default new Router({
       }
     },
     {
-      path: '/legwork',
-      name: 'legwork',
-      component: legwork,
+      path: '/legwork/task',
+      name: 'taskList',
+      component: taskList,
       meta: {
-        title: 'Legwork'
+        title: '任务列表'
+      }
+    },
+    {
+      path: '/legwork/task/detail',
+      name: 'taskDetail',
+      component: taskDetail,
+      meta: {
+        title: '任务详情'
       }
     }
   ]
