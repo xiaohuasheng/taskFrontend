@@ -119,7 +119,7 @@ export default {
   methods: {
     onSubmit(type, value) {
       let param = {'type': type, 'value': value}
-      this.axios.post('http://task.xiaohuasheng.cc/api/convert', param).then(data => {
+      this.axios.post(process.env.BACKEND_HOST + '/api/convert', param).then(data => {
         console.log(data)
         if (data.data.data) {
           switch (type) {

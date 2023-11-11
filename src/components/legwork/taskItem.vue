@@ -63,7 +63,7 @@ export default {
       let r = confirm('确定要领取任务' + content + '吗?')
       if (r) {
         let userID = this.$route.query.id
-        this.axios.post('http://task.xiaohuasheng.cc/api/legwork/accept_task/' + think.taskID + '?id=' + userID)
+        this.axios.post(process.env.BACKEND_HOST + '/api/legwork/accept_task/' + think.taskID + '?id=' + userID)
           .then(data => {
           if (data.data.code === 0) {
             this.$message(data.data.msg)

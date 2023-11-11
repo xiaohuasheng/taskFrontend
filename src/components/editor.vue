@@ -15,7 +15,7 @@ export default {
   },
   methods: {
     save() {
-      this.axios.post('http://task.xiaohuasheng.cc/api/post', this.value).then(data => {
+      this.axios.post(process.env.BACKEND_HOST + '/api/post', this.value).then(data => {
         if (data.data.data) {
           console.log(data)
           this.$message('保存成功')

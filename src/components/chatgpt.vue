@@ -20,7 +20,7 @@ export default {
   methods: {
     onSubmit() {
       let param = {'content': this.chatgpt, 'text_type': this.textType}
-      this.axios.post('http://task.xiaohuasheng.cc/api/chatgpt', param).then(data => {
+      this.axios.post(process.env.BACKEND_HOST + '/api/chatgpt', param).then(data => {
         if (data.data.code === 0) {
           this.$message('保存成功')
         } else {

@@ -39,7 +39,7 @@
         </div>
         <div v-if="think.type === 'image'" class="content">
           <div class="images" v-viewer="{movable: false}">
-            <img :src="'http://task.xiaohuasheng.cc/api/media?id=' + think.media_id" width="100" height="100">
+            <img :src="process.env.BACKEND_HOST + '/api/media?id=' + think.media_id" width="100" height="100">
           </div>
         </div>
         <div class="content" v-if="think.type === 'voice'" @click="openRecording(think.media_id)"
@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     openRecording(mediaID) {
-      let url = 'http://task.xiaohuasheng.cc/api/media?type=voice&id=' + mediaID
+      let url = process.env.BACKEND_HOST + '/api/media?type=voice&id=' + mediaID
       let vm = this
       console.log('open recording')
       if (vm.playRec !== null && vm.playRec.isPlaying()) {
@@ -103,7 +103,7 @@ export default {
       let r = confirm('确定要删除' + content + '吗?')
       if (r) {
         let authID = this.$route.query.id
-        this.axios.delete('http://task.xiaohuasheng.cc/api/think?id=' +
+        this.axios.delete(process.env.BACKEND_HOST + '/api/think?id=' +
           authID + '&think_id=' + think.id).then(data => {
           if (data.data.data) {
             this.$message('删除成功')

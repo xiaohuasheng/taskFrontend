@@ -65,7 +65,7 @@ export default {
     loadPage() {
       let userID = this.$route.query.id
       let taskID = this.$route.query.task_id
-      this.axios.get('http://task.xiaohuasheng.cc/api/legwork/task/' + taskID + '?id=' + userID).then(response => {
+      this.axios.get(process.env.BACKEND_HOST + '/api/legwork/task/' + taskID + '?id=' + userID).then(response => {
         if (response.data.code !== 0) {
           this.$message(response.data.msg)
         } else {
@@ -78,7 +78,7 @@ export default {
     },
     updateTask() {
       let userID = this.$route.query.id
-      this.axios.post('http://task.xiaohuasheng.cc/api/legwork/task/' + this.task.taskID + '?id=' + userID,
+      this.axios.post(process.env.BACKEND_HOST + '/api/legwork/task/' + this.task.taskID + '?id=' + userID,
         this.task).then(data => {
         if (data.data.code === 0) {
           console.log(data)

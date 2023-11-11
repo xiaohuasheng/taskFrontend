@@ -54,7 +54,7 @@ export default {
     loadPage(page) {
       let thinkID = this.$route.query.id
       this.isLoading = true
-      this.axios.get('http://task.xiaohuasheng.cc/api/think?id=' + thinkID + '&page=' + page).then(response => {
+      this.axios.get(process.env.BACKEND_HOST + '/api/think?id=' + thinkID + '&page=' + page).then(response => {
         if (response.data.code !== 0) {
           this.$message(response.data.msg)
         } else {

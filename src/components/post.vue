@@ -17,7 +17,7 @@ export default {
     }
   },
   mounted() {
-    this.axios.get('http://task.xiaohuasheng.cc/api/post').then(response => {
+    this.axios.get(process.env.BACKEND_HOST + '/api/post').then(response => {
       this.posts = response.data.data
     }).catch(function (error) { // 请求失败处理
       this.$message('服务端出错')
