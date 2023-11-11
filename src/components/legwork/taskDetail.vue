@@ -30,6 +30,7 @@
             <el-input type="input" v-model="task.status" disabled="disabled"></el-input>
           </el-form-item>
           <el-form-item>
+            <el-button v-if="task.status==='已发布'" type="danger" @click="cancelTask()">取消</el-button>
             <el-button type="primary" @click="updateTask()">修改</el-button>
           </el-form-item>
         </el-form>
@@ -90,6 +91,25 @@ export default {
       }).catch(error => {
         console.log(error)
       })
+    },
+    cancelTask() {
+      let content = this.task.description.substring(0, 10)
+      let r = confirm('确定要取消任务"' + content + '"吗?')
+      if (r) {
+        let userID = this.$route.query.id
+        this.axios.post('http://task.xiaohuasheng.cc/api/legwork/cancel_task/' + this.task.taskID + '?id=' + userID)
+          .then(data => {
+          if (data.data.code === 0) {
+            console.log(data)
+            this.$message('取消成功')
+          } else {
+            console.log(data)
+            this.$message('取消失败: ' + data.data.msg)
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+      }
     }
   }
 }
