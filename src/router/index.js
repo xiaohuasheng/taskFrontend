@@ -5,7 +5,10 @@ import WorkUtils from '@/components/WorkUtils'
 import post from '@/components/post'
 import think from '@/components/think'
 import taskList from '@/components/legwork/taskList'
+import acceptedTask from '@/components/legwork/acceptedTask'
+import issuedTask from '@/components/legwork/issuedTask'
 import taskDetail from '@/components/legwork/taskDetail'
+import legworkMine from '@/components/legwork/mine'
 import editor from '@/components/editor'
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
@@ -62,7 +65,31 @@ export default new Router({
       name: 'taskList',
       component: taskList,
       meta: {
-        title: '任务列表'
+        title: '待领取的'
+      }
+    },
+    {
+      path: '/legwork/accepted-task',
+      name: 'acceptedTask',
+      component: acceptedTask,
+      meta: {
+        title: '我领取的'
+      }
+    },
+    {
+      path: '/legwork/issued-task',
+      name: 'issuedTask',
+      component: issuedTask,
+      meta: {
+        title: '我发布的'
+      }
+    },
+    {
+      path: '/legwork/mine',
+      name: 'mine',
+      component: legworkMine,
+      meta: {
+        title: '我的主页'
       }
     },
     {

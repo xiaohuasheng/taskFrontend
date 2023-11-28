@@ -8,6 +8,8 @@
           <!--          <h2>我的任务</h2>-->
         </div>
       </header>
+      <navigation></navigation>
+      <el-divider></el-divider>
       <div class="memos">
         <el-form ref="form" :model="task" label-width="80px">
           <el-form-item label="描述">
@@ -42,8 +44,11 @@
   </el-container>
 </template>
 <script>
+import navigation from './navigation.vue'
+
 export default {
   name: 'taskDetail',
+  components: {navigation},
   data() {
     return {
       task: {
@@ -60,6 +65,7 @@ export default {
   },
   mounted() {
     console.log('mounted')
+    console.log('Current ID:', this.$route.query.id)
     this.loadPage()
   },
   methods: {

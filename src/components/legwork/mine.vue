@@ -5,14 +5,29 @@
       <body>
       <header>
         <div class="logo">
-<!--          <h2>Thinking</h2>-->
+          <!--          <h2>我的任务</h2>-->
         </div>
       </header>
       <navigation></navigation>
       <el-divider></el-divider>
       <div class="memos">
-        <task-item v-for="item in posts" v-bind:key="item.id" v-bind:think="item"></task-item>
-        <div v-if="!posts || posts.length === 0">当前没有任务</div>
+        <el-form ref="form" :model="user" label-width="80px">
+          <el-form-item label="名字">
+            <el-input placeholder="" size="medium" v-model="user.name"></el-input>
+          </el-form-item>
+          <el-form-item label="联系方式">
+            <el-input type="input" v-model="user.contact"></el-input>
+          </el-form-item>
+          <el-form-item label="地址">
+            <el-input placeholder="" autosize type="textarea" size="medium" v-model="user.address"></el-input>
+          </el-form-item>
+          <el-form-item label="金币数">
+            <div class="my-coin" style="max-height: none;"><p>{{ user.coins }} <i class="el-icon-coin"></i></p></div>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="updateMyInfo()">修改</el-button>
+          </el-form-item>
+        </el-form>
       </div>
       </body>
       </html>
@@ -21,64 +36,62 @@
   </el-container>
 </template>
 <script>
-import taskItem from './taskItem.vue'
 import navigation from './navigation.vue'
 
 export default {
-  name: 'taskList',
-  components: {taskItem, navigation},
+  name: 'mine',
+  components: {navigation},
   data() {
     return {
-      posts: [],
-      currentPage: 1,
-      totalPages: 1,
-      isLoading: false,
-      isEnd: false
+      user: {
+        name: '',
+        avatar: '',
+        address: '',
+        contact: '',
+        coins: 0
+      }
     }
   },
   mounted() {
-    this.loadPage(this.currentPage)
-    window.addEventListener('scroll', this.handleScroll)
-  },
-  destroyed() {
-    window.removeEventListener('scroll', this.handleScroll)
+    this.loadPage()
   },
   methods: {
-    loadPage(page) {
-      let thinkID = this.$route.query.id
-      this.isLoading = true
-      this.axios.get(process.env.BACKEND_HOST + '/api/legwork/task?id=' + thinkID + '&page=' + page).then(response => {
+    loadPage() {
+      let userID = this.$route.query.id
+      this.axios.get(process.env.BACKEND_HOST + '/api/legwork/mine?id=' + userID).then(response => {
         if (response.data.code !== 0) {
           this.$message(response.data.msg)
         } else {
-          this.posts = this.posts.concat(response.data.data.list)
-          let total = response.data.data.total
-          // total 除以 10 向上取整
-          this.totalPages = Math.ceil(total / 10)
-          if (this.currentPage === this.totalPages) {
-            this.isEnd = true
-          }
+          this.user = response.data.data
         }
-        this.isLoading = false
       }).catch(function (error) { // 请求失败处理
         this.$message('服务端出错')
         console.log(error)
-        this.isLoading = false
       })
     },
-    handleScroll() {
-      const scrollHeight = document.documentElement.scrollHeight
-      const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-      const clientHeight = document.documentElement.clientHeight
-      if (!this.isLoading && scrollTop + clientHeight >= scrollHeight - 100 && this.currentPage < this.totalPages) {
-        this.loadPage(++this.currentPage)
-      }
+    updateMyInfo() {
+      let userID = this.$route.query.id
+      this.axios.post(process.env.BACKEND_HOST + '/api/legwork/mine?id=' + userID,
+        this.user).then(data => {
+        if (data.data.code === 0) {
+          console.log(data)
+          this.$message('修改成功')
+        } else {
+          console.log(data)
+          this.$message('修改失败: ' + data.data.msg)
+        }
+      }).catch(error => {
+        console.log(error)
+      })
     }
   }
 }
 
 </script>
 <style type="text/css">
+.my-coin {
+  width: 4rem;
+}
 * {
   margin: 0;
   padding: 0;

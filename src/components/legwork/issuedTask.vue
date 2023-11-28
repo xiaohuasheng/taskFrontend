@@ -11,7 +11,7 @@
       <navigation></navigation>
       <el-divider></el-divider>
       <div class="memos">
-        <task-item v-for="item in posts" v-bind:key="item.id" v-bind:think="item"></task-item>
+        <task-item v-for="item in posts" v-bind:key="item.id" v-bind:think="item" v-bind:scene="'issued'"></task-item>
         <div v-if="!posts || posts.length === 0">当前没有任务</div>
       </div>
       </body>
@@ -25,7 +25,7 @@ import taskItem from './taskItem.vue'
 import navigation from './navigation.vue'
 
 export default {
-  name: 'taskList',
+  name: 'issuedTask',
   components: {taskItem, navigation},
   data() {
     return {
@@ -47,7 +47,8 @@ export default {
     loadPage(page) {
       let thinkID = this.$route.query.id
       this.isLoading = true
-      this.axios.get(process.env.BACKEND_HOST + '/api/legwork/task?id=' + thinkID + '&page=' + page).then(response => {
+      this.axios.get(process.env.BACKEND_HOST + '/api/legwork/task?status=issued&id=' + thinkID + '&page=' + page)
+        .then(response => {
         if (response.data.code !== 0) {
           this.$message(response.data.msg)
         } else {

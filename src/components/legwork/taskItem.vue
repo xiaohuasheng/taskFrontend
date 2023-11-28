@@ -9,15 +9,19 @@
     height: 20px;
 "><a class="time"><span>{{ think.createTime }}</span></a>
           <div style="margin-right: 1rem">
-            <el-button round size="mini" @click="acceptTask(think)">领取</el-button>
+            <el-button v-if="!scene" round size="mini" @click="acceptTask(think)">领取</el-button>
+            <el-button v-if="scene==='accepted' || scene==='issued'" round size="mini" disabled>{{think.status}}</el-button>
           </div>
         </div>
         <div class="content">
-          <div class="richText" style="max-height: none;"><p>{{ think.description }}</p></div>
-          <div class="richText" style="max-height: none;"><p>ID: {{ think.taskID}}</p></div>
+          <div class="richText" style="max-height: none;">
+            <el-link  v-if="scene==='issued' && think.status==='已发布'" type="primary" :href="'/#/legwork/task/detail?task_id='+ think.taskID +'&id=' + $route.query.id">点击修改</el-link>
+          </div>
+          <div class="richText" style="max-height: none;"><p>描述：{{ think.description }}</p></div>
           <div class="richText" style="max-height: none;"><p>起点: {{ think.startingPoint }}</p></div>
           <div class="richText" style="max-height: none;"><p>终点: {{ think.endPoint }}</p></div>
           <div class="richText" style="max-height: none;"><p>奖励: {{ think.reward }} <i class="el-icon-coin"></i></p></div>
+          <div v-if="scene==='accepted' || scene==='issued'" class="richText" style="max-height: none;"><p>联系方式: {{ think.contact }}</p></div>
         </div>
       </div>
     </div>
@@ -31,7 +35,8 @@ export default {
     think: {
       type: Object,
       required: true
-    }
+    },
+    scene: ''
   },
   data() {
     return {
