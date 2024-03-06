@@ -6,6 +6,7 @@
       <header>
         <div class="logo">
 <!--          <h2>Thinking</h2>-->
+          <el-input v-model="search" placeholder="搜一搜" @input="handleInputChange"></el-input>
         </div>
       </header>
       <div class="memos">
@@ -40,7 +41,8 @@ export default {
       currentPage: 1,
       totalPages: 1,
       isLoading: false,
-      isEnd: false
+      isEnd: false,
+      search: ''
     }
   },
   mounted() {
@@ -51,21 +53,30 @@ export default {
     window.removeEventListener('scroll', this.handleScroll)
   },
   methods: {
+    handleInputChange() {
+      // 在这里调用接口，例如使用 axios 或其他方式
+      console.log('Input changed:', this.search)
+      this.posts = []
+      this.loadPage(1)
+    },
     loadPage(page) {
       let thinkID = this.$route.query.id
       this.isLoading = true
-      this.axios.get(process.env.BACKEND_HOST + '/api/think?id=' + thinkID + '&page=' + page).then(response => {
-        if (response.data.code !== 0) {
-          this.$message(response.data.msg)
-        } else {
-          this.posts = this.posts.concat(response.data.data.list)
-          let total = response.data.data.total
-          // total 除以 10 向上取整
-          this.totalPages = Math.ceil(total / 10)
-          if (this.currentPage === this.totalPages) {
-            this.isEnd = true
+      // search
+      let search = this.search
+      this.axios.get(process.env.BACKEND_HOST + '/api/think?id=' + thinkID + '&page=' + page + '&search=' + search)
+        .then(response => {
+          if (response.data.code !== 0) {
+            this.$message(response.data.msg)
+          } else {
+            this.posts = this.posts.concat(response.data.data.list)
+            let total = response.data.data.total
+            // total 除以 10 向上取整
+            this.totalPages = Math.ceil(total / 10)
+            if (this.currentPage === this.totalPages) {
+              this.isEnd = true
+            }
           }
-        }
         this.isLoading = false
       }).catch(function (error) { // 请求失败处理
         this.$message('服务端出错')
