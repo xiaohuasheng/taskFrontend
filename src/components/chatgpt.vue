@@ -2,7 +2,7 @@
   <el-form ref="form" label-width="80px">
     <el-form-item label="chatgpt">
       <div>https://chat.openai.com/api/auth/session</div>
-      <el-input type="input" size="medium" v-model="textType"></el-input>
+      <el-input type="input" size="medium" v-model="textType" placeholder="curl/word"></el-input>
       <el-input autosize type="textarea" size="medium" v-model="chatgpt"></el-input>
       <el-button type="primary" @click="onSubmit">保存</el-button>
     </el-form-item>
