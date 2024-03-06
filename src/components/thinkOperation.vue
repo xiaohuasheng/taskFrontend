@@ -59,8 +59,8 @@
         </div>
         <div>
           <!-- 点击编辑按钮触发 openDialog 方法 -->
-          <el-dialog :visible.sync="dialogVisible" title="编辑笔记" @close="closeDialog">
-            <el-input v-model="editedThink.content" placeholder="请输入笔记内容"></el-input>
+          <el-dialog :visible.sync="dialogVisible" title="编辑笔记" @close="closeDialog" width="80%">
+            <el-input autosize type="textarea" size="medium" v-model="editedThink.content" placeholder="请输入笔记内容"></el-input>
             <!-- 保存和取消按钮 -->
             <span slot="footer" class="dialog-footer">
                   <el-button @click="saveNote">保存</el-button>
@@ -110,12 +110,14 @@ export default {
   },
   methods: {
     openDialog(think) {
-      this.editedThink = think
+      this.editedThink = { ...think }
       this.dialogVisible = true
     },
     closeDialog() {
       // 关闭弹窗时重置编辑内容
-      this.editedThink = null
+      this.editedThink = {
+        content: ''
+      }
       this.dialogVisible = false
     },
     saveNote() {
@@ -159,6 +161,7 @@ export default {
           this.$message('更新成功')
           // 关闭弹窗
           this.closeDialog()
+          this.think.content = think.content
         } else {
           this.$message('更新失败')
           console.log(data)
@@ -193,4 +196,8 @@ export default {
 </script>
 
 <style scoped>
+.tools {
+  float: left;
+  margin-right: 0.5rem;
+}
 </style>
