@@ -7,6 +7,16 @@
         <div class="logo">
 <!--          <h2>Thinking</h2>-->
           <el-input v-model="search" placeholder="搜一搜" @input="handleInputChange"></el-input>
+<!--          新增笔记按钮-->
+          <el-button type="primary" @click="openDialog()">新增笔记</el-button>
+          <el-dialog title="新增笔记" :visible.sync="dialogVisible">
+            <el-input v-model="addThink.content" placeholder="请输入笔记内容"></el-input>
+            <!-- 保存和取消按钮 -->
+            <span slot="footer" class="dialog-footer">
+                  <el-button @click="saveNote">保存</el-button>
+                  <el-button @click="closeDialog">取消</el-button>
+                </span>
+          </el-dialog>
         </div>
       </header>
       <div class="memos">
@@ -42,7 +52,11 @@ export default {
       totalPages: 1,
       isLoading: false,
       isEnd: false,
-      search: ''
+      search: '',
+      dialogVisible: false, // 控制弹窗显示/隐藏
+      addThink: {
+        content: ''
+      }
     }
   },
   mounted() {
@@ -53,6 +67,32 @@ export default {
     window.removeEventListener('scroll', this.handleScroll)
   },
   methods: {
+    openDialog() {
+      this.dialogVisible = true
+    },
+    closeDialog() {
+      // 关闭弹窗时重置编辑内容
+      this.addThink.content = ''
+      this.dialogVisible = false
+    },
+    saveNote() {
+      let authID = this.$route.query.id
+      this.axios.post(process.env.BACKEND_HOST + '/api/think?id=' + authID, {
+        content: this.addThink.content
+      }).then(data => {
+        if (data.data.data) {
+          this.$message('添加成功')
+          // 关闭弹窗
+          this.closeDialog()
+        } else {
+          this.$message('添加失败')
+          console.log(data)
+        }
+      }).catch(function (error) {
+        // 请求失败处理
+        console.log(error)
+      })
+    },
     handleInputChange() {
       // 在这里调用接口，例如使用 axios 或其他方式
       console.log('Input changed:', this.search)
