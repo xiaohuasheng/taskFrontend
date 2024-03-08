@@ -5,10 +5,14 @@
       <body>
       <header>
         <div class="logo">
-<!--          <h2>Thinking</h2>-->
-          <el-input v-model="search" placeholder="搜一搜" @input="handleInputChange"></el-input>
-<!--          新增笔记按钮-->
-          <el-button type="primary" @click="openDialog()">新增笔记</el-button>
+          <el-row>
+            <el-col :span="18">
+              <el-input v-model="search" placeholder="搜一搜" @input="handleInputChange"></el-input>
+            </el-col>
+            <el-col :span="6">
+              <el-button type="primary" @click="openDialog()">新增笔记</el-button>
+            </el-col>
+          </el-row>
           <el-dialog title="新增笔记" :visible.sync="dialogVisible">
             <el-input v-model="addThink.content" placeholder="请输入笔记内容"></el-input>
             <!-- 保存和取消按钮 -->
