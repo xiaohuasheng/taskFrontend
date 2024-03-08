@@ -6,15 +6,15 @@
       <header>
         <div class="logo">
           <el-row>
-            <el-col :span="18">
+            <el-col :span="16">
               <el-input v-model="search" placeholder="搜一搜" @input="handleInputChange"></el-input>
             </el-col>
             <el-col :span="6">
-              <el-button type="primary" @click="openDialog()">新增笔记</el-button>
+              <el-button type="primary" size="small" @click="openDialog()" class="add_note">新增笔记</el-button>
             </el-col>
           </el-row>
-          <el-dialog title="新增笔记" :visible.sync="dialogVisible">
-            <el-input v-model="addThink.content" placeholder="请输入笔记内容"></el-input>
+          <el-dialog title="新增笔记" :visible.sync="dialogVisible" width="80%">
+            <el-input autosize type="textarea" size="medium" v-model="addThink.content" placeholder="请输入笔记内容"></el-input>
             <!-- 保存和取消按钮 -->
             <span slot="footer" class="dialog-footer">
                   <el-button @click="saveNote">保存</el-button>
@@ -339,5 +339,10 @@ html {
 .select-items div:hover,
 .same-as-selected {
   background-color: rgba(0, 0, 0, 0.1);
+}
+
+.add_note {
+  margin-left: 4px;
+  height: 2.4rem;
 }
 </style>
