@@ -1,52 +1,10 @@
 <template>
   <el-form ref="form" :model="form" label-width="80px">
-    <el-form-item label="新建task json">
-      <el-button type="primary" @click="taskConvert()">转换</el-button>
-      <el-input placeholder="团队UUID" type="input" size="medium" v-model="form.teamUUID"></el-input>
-      <el-input placeholder="希望创建的工作项的时间和状态变化过程，空格分开，如果不指定状态，就表示不需要状态流转
-2021-08-25 待处理 2021-08-26 处理中
-2021-08-27" autosize type="textarea" size="medium" v-model="form.dateStatus"></el-input>
-      <el-input placeholder="add3接口的参数" type="textarea" size="medium" v-model="form.taskStr"></el-input>
-      <el-input placeholder="stamps/data接口获取团队状态的结果" type="textarea" size="medium" v-model="form.teamStatus"></el-input>
-<!--      分割线-->
-      <el-divider></el-divider>
-      <el-input placeholder="创建工作项参数" type="textarea" size="medium" v-model="form.taskStrRes"></el-input>
-      <el-input placeholder="修改状态SQL" autosize type="textarea" size="medium" v-model="form.statusSql"></el-input>
-      <el-button type="primary" @click="taskConvert()">转换</el-button>
-    </el-form-item>
-    <el-divider></el-divider>
-    <el-form-item label="nginx日志解析">
-      <el-upload
-        class="upload-demo"
-        action=""
-        :http-request="uploadSectionFile"
-        :on-preview="handlePreview"
-        :on-remove="handleRemove"
-        :before-remove="beforeRemove"
-        multiple
-        :limit="1"
-        :on-exceed="handleExceed"
-        :file-list="fileList">
-        <el-button size="small" type="primary">点击上传</el-button>
-      </el-upload>
-    </el-form-item>
-    <el-divider></el-divider>
     <el-form-item label="item/graphql参数转换">
       <el-button type="primary" @click="graphqlConvert()">转换</el-button>
       <el-input autosize type="textarea" size="medium" v-model="form.graphql"></el-input>
     </el-form-item>
     <el-divider></el-divider>
-    <el-form-item label="sql填充参数">
-      <el-input autosize :placeholder="sqlPlaceholder" type="textarea" size="medium" v-model="form.sql"></el-input>
-      <el-input autosize type="textarea" v-model="form.sqlRes"></el-input>
-      <el-button type="primary" @click="sqlConvert(form.sql)">转换</el-button>
-    </el-form-item>
-    <el-divider></el-divider>
-    <el-form-item label="模板历史记录">
-      <div v-for="(history, index) in historyList" :key="index" class="text item">
-        <el-input autosize type="textarea" size="medium" :value="history"></el-input>
-      </div>
-    </el-form-item>
     <el-form-item label="模板填充">
       <el-button type="primary" @click="templateConvert(form.tpl, form.tplValue)">转换</el-button>
       <el-input autosize placeholder="\1" type="textarea" size="medium" v-model="form.tpl"></el-input>
@@ -69,11 +27,34 @@
       <el-input autosize type="textarea" v-model="form.splitRes"></el-input>
       <el-button type="primary" @click="splitSortConvert(form.split)">转换</el-button>
     </el-form-item>
+    <el-divider></el-divider>
     <el-form-item label="ES日志转换为curl">
       <el-input autosize type="textarea" size="medium" v-model="form.eslog"></el-input>
       <el-input autosize type="textarea" v-model="form.eslogRes"></el-input>
       <el-button type="primary" @click="eslogConvert(form.eslog)">转换</el-button>
     </el-form-item>
+    <el-form-item label="nginx日志解析">
+      <el-upload
+        class="upload-demo"
+        action=""
+        :http-request="uploadSectionFile"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        multiple
+        :limit="1"
+        :on-exceed="handleExceed"
+        :file-list="fileList">
+        <el-button size="small" type="primary">点击上传</el-button>
+      </el-upload>
+    </el-form-item>
+    <el-divider></el-divider>
+    <el-form-item label="sql填充参数">
+      <el-input autosize :placeholder="sqlPlaceholder" type="textarea" size="medium" v-model="form.sql"></el-input>
+      <el-input autosize type="textarea" v-model="form.sqlRes"></el-input>
+      <el-button type="primary" @click="sqlConvert(form.sql)">转换</el-button>
+    </el-form-item>
+    <el-divider></el-divider>
   </el-form>
 </template>
 <script>
@@ -115,6 +96,9 @@ export default {
   },
   mounted() {
     this.historyList = this.getHistory()
+    if (this.historyList.length > 0) {
+      this.form.tpl = this.historyList[0]
+    }
   },
   methods: {
     onSubmit(type, value) {
