@@ -14,7 +14,15 @@
             </el-col>
           </el-row>
           <el-dialog title="新增笔记" :visible.sync="dialogVisible" width="80%">
-            <el-input autosize type="textarea" size="medium" v-model="addThink.content" placeholder="请输入笔记内容"></el-input>
+            <el-input autosize type="textarea" size="medium" v-model="addThink.content"
+                      placeholder="请输入笔记内容" class="text-input"></el-input>
+            <!-- 笔记类型下拉选择框 -->
+            <el-select v-model="addThink.type" placeholder="请选择笔记类型" class="select-box">
+              <el-option label="文本" value="text"></el-option>
+              <el-option label="单词" value="word"></el-option>
+              <el-option label="图片" value="image"></el-option>
+              <el-option label="语音" value="voice"></el-option>
+            </el-select>
             <!-- 保存和取消按钮 -->
             <span slot="footer" class="dialog-footer">
                   <el-button @click="saveNote">保存</el-button>
@@ -59,7 +67,8 @@ export default {
       search: '',
       dialogVisible: false, // 控制弹窗显示/隐藏
       addThink: {
-        content: ''
+        content: '',
+        type: 'text' // 默认类型为文本
       }
     }
   },
@@ -77,17 +86,21 @@ export default {
     closeDialog() {
       // 关闭弹窗时重置编辑内容
       this.addThink.content = ''
+      this.addThink.type = 'text'
       this.dialogVisible = false
     },
     saveNote() {
       let authID = this.$route.query.id
       this.axios.post(process.env.BACKEND_HOST + '/api/think?id=' + authID, {
-        content: this.addThink.content
+        content: this.addThink.content,
+        type: this.addThink.type
       }).then(data => {
         if (data.data.data) {
           this.$message('添加成功')
           // 关闭弹窗
           this.closeDialog()
+          this.posts = []
+          this.loadPage(1)
         } else {
           this.$message('添加失败')
           console.log(data)
@@ -344,5 +357,14 @@ html {
 .add_note {
   margin-left: 4px;
   height: 2.4rem;
+}
+
+.select-box {
+  width: 100%; /* 使下拉框宽度与输入框相同 */
+  margin-bottom: 10px; /* 调整下拉框与输入框的上下间距 */
+}
+
+.text-input {
+  margin-bottom: 10px; /* 调整输入框与下拉框的上下间距 */
 }
 </style>
