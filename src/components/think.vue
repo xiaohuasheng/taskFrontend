@@ -84,9 +84,7 @@ export default {
       this.dialogVisible = true
     },
     closeDialog() {
-      // 关闭弹窗时重置编辑内容
       this.addThink.content = ''
-      this.addThink.type = 'text'
       this.dialogVisible = false
     },
     saveNote() {
