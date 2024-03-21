@@ -13,6 +13,7 @@ import editor from '@/components/editor'
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import chatgpt from '@/components/chatgpt'
+import exec from '@/components/exec'
 
 Vue.use(Router)
 Vue.use(mavonEditor)
@@ -58,6 +59,14 @@ export default new Router({
       component: think,
       meta: {
         title: 'Thinking'
+      }
+    },
+    {
+      path: '/exec',
+      name: 'exec',
+      component: exec,
+      meta: {
+        title: 'Exec'
       }
     },
     {
