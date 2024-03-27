@@ -63,8 +63,8 @@
             <el-input autosize type="textarea" size="medium" v-model="editedThink.content" placeholder="请输入笔记内容"></el-input>
             <!-- 保存和取消按钮 -->
             <span slot="footer" class="dialog-footer">
-                  <el-button @click="saveNote">保存</el-button>
                   <el-button @click="closeDialog">取消</el-button>
+                  <el-button @click="saveNote" type="primary">保存</el-button>
                 </span>
           </el-dialog>
         </div>
