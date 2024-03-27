@@ -5,7 +5,8 @@
         <el-button type="primary" @click="executeCommand" :disabled="isLoading">执行指令</el-button>
         <div class="result-area">
           <template v-if="!isLoading && result !== null">
-            <el-input autosize type="textarea" size="medium" v-model="result"></el-input>
+<!--            <el-input autosize type="textarea" size="medium" v-model="result"></el-input>-->
+            <div v-html="result"></div>
           </template>
           <template v-if="isLoading">
             <p>正在加载结果...</p>
@@ -54,7 +55,11 @@ export default {
         if (data.data.error === '') {
           this.isLoading = false
           if (data.data.content !== '') {
-            this.result = data.data.content
+            // 把 \n 替换为 <br>，以便在页面上显示
+            let formattedResult = data.data.content.replace(/\n/g, '<br>')
+            // 匹配任意合法的URL链接并替换为超链接展示
+            formattedResult = formattedResult.replace(/(https?:\/\/\S+)/g, '<a href="$1" target="_blank">$1</a>')
+            this.result = formattedResult
           }
         } else if (data.data.error === 'finish') {
           this.stopPolling()
