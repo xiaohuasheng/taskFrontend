@@ -55,7 +55,7 @@
       <el-button type="primary" @click="sqlConvert(form.sql)">转换</el-button>
     </el-form-item>
     <el-form-item label="sql填充参数，效能管理">
-      <el-input autosize :placeholder="sqlPlaceholder" type="textarea" size="medium" v-model="form.sql2"></el-input>
+      <el-input autosize :placeholder="sqlPlaceholder2" type="textarea" size="medium" v-model="form.sql2"></el-input>
       <el-input autosize type="textarea" v-model="form.sqlRes2"></el-input>
       <el-button type="primary" @click="sqlConvert2(form.sql2)">转换</el-button>
     </el-form-item>
@@ -74,11 +74,12 @@ export default {
   data() {
     return {
       sqlPlaceholder: ' [SQL] 2022/08/04 16:04:42 SELECT xxx ? ?; [1:"xxx" 2:"xxx" 3:1]',
+      sqlPlaceholder2: 'SELECT joinGet(\'field_option_join\', \'name\', category) as category_name, count(category) as metric_06c9ik1ujxor_t7io3vthohi, groupUniqArray(category) as `category_` FROM default.project final WHERE team_uuid = ? AND status <> ? AND __deleted = ? AND category IS NOT NULL AND category <> ? GROUP BY joinGet(\'field_option_join\', \'name\', category) ORDER BY count(category) DESC LIMIT 500|[4yWq3dYW 2 0 ]|12.713367ms',
       form: {
         graphql: '',
         sql: '',
         sqlRes: '',
-        sql2: 'SELECT joinGet(\'field_option_join\', \'name\', category) as category_name, count(category) as metric_06c9ik1ujxor_t7io3vthohi, groupUniqArray(category) as `category_` FROM default.project final WHERE team_uuid = ? AND status <> ? AND __deleted = ? AND category IS NOT NULL AND category <> ? GROUP BY joinGet(\'field_option_join\', \'name\', category) ORDER BY count(category) DESC LIMIT 500|[4yWq3dYW 2 0 ]|12.713367ms',
+        sql2: '',
         sqlRes2: '',
         tpl: '',
         tplValue: '',
