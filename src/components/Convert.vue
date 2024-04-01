@@ -54,6 +54,11 @@
       <el-input autosize type="textarea" v-model="form.sqlRes"></el-input>
       <el-button type="primary" @click="sqlConvert(form.sql)">转换</el-button>
     </el-form-item>
+    <el-form-item label="sql填充参数，效能管理">
+      <el-input autosize :placeholder="sqlPlaceholder" type="textarea" size="medium" v-model="form.sql2"></el-input>
+      <el-input autosize type="textarea" v-model="form.sqlRes2"></el-input>
+      <el-button type="primary" @click="sqlConvert2(form.sql2)">转换</el-button>
+    </el-form-item>
     <el-divider></el-divider>
   </el-form>
 </template>
@@ -62,6 +67,7 @@ import {convertLogToCurlCommand} from '../convert'
 import {convertNginxLog} from '../parseNginxLog'
 import {generateTask} from '../generateTask'
 import {saveAs} from 'file-saver'
+import {sqlConvert2} from '../convertSql'
 
 export default {
   name: 'Convert',
@@ -72,6 +78,8 @@ export default {
         graphql: '',
         sql: '',
         sqlRes: '',
+        sql2: 'SELECT joinGet(\'field_option_join\', \'name\', category) as category_name, count(category) as metric_06c9ik1ujxor_t7io3vthohi, groupUniqArray(category) as `category_` FROM default.project final WHERE team_uuid = ? AND status <> ? AND __deleted = ? AND category IS NOT NULL AND category <> ? GROUP BY joinGet(\'field_option_join\', \'name\', category) ORDER BY count(category) DESC LIMIT 500|[4yWq3dYW 2 0 ]|12.713367ms',
+        sqlRes2: '',
         tpl: '',
         tplValue: '',
         tplRes: '',
@@ -200,6 +208,9 @@ export default {
         result.push(tmpSql)
       }
       this.form.sqlRes = result.join('\n')
+    },
+    sqlConvert2(data) {
+      this.form.sqlRes2 = sqlConvert2(data)
     },
     ConvertOneSql(data) {
       let splitCharPos = data.indexOf('[')
