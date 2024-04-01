@@ -12,7 +12,11 @@ export function sqlConvert2(data) {
 
   // 填充 SQL 模板中的参数
   return sqlTemplate.replace(/\?/g, () => {
-    const param = paramList.shift()
+    let param = paramList.shift()
+    if (param === '') {
+      param = "''" // 将空字符串替换为 ''
+      return param
+    }
     return isNaN(param) ? `'${param}'` : param
   })
 }
