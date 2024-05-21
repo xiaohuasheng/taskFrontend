@@ -14,6 +14,7 @@ import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import chatgpt from '@/components/chatgpt'
 import exec from '@/components/exec'
+import escTest from '@/components/escTest'
 
 Vue.use(Router)
 Vue.use(mavonEditor)
@@ -67,6 +68,14 @@ export default new Router({
       component: exec,
       meta: {
         title: 'Exec'
+      }
+    },
+    {
+      path: '/escTest',
+      name: 'escTest',
+      component: escTest,
+      meta: {
+        title: 'escTest'
       }
     },
     {
