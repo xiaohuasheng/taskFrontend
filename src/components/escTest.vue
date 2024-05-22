@@ -1,22 +1,12 @@
 <template>
   <div id="app">
-    <el-radio-group v-model="direction">
-      <el-radio label='ltr'>左边</el-radio>
-      <el-radio label='rtl'>右边</el-radio>
-      <el-radio label='ttb'>上边</el-radio>
-      <el-radio label="btt">下边</el-radio>
-    </el-radio-group>
-    <el-button @click='showTable'>显示抽屉表格</el-button>
-    <el-drawer title="抽屉表格" :visible.sync="visible" :direction="direction"
-      :before-close="handleClose"
-    >
-      <el-image
-        style="width: 100px; height: 100px"
-        class="image-container"
-        :src="image.src"
-        :preview-src-list="image.srcList"
-      ></el-image>
-    </el-drawer>
+    <div class="chat-container">
+      <div v-for="(message, index) in messages" :key="index" class="message-text-container">
+        <div class="message-text"  :class="[message.type]">
+          {{ message.text }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -24,6 +14,16 @@ export default {
   name: 'escTest',
   data() {
     return {
+      messages: [
+        { text: 'Hello!(Optional) We are always working on improving our offerings. Please take this quick survey to tell us about your needs to create a successful Azure OpenAI Service: AOAI (qualtrics.com)', type: 'received' },
+        { text: 'Arenas \nallocate large chunks of memory for Go values, so theyre likely to\n' +
+            'be inefficient for allocating only small amounts of small Go values.',
+          type: 'sent' },
+        { text: 'How are you?', type: 'received' },
+        { text: "I'm good, thanks!", type: 'sent' },
+        { text: 'What about you?', type: 'sent' },
+        { text: "I'm fine too.", type: 'received' }
+      ],
       drawerVisible: true,
       currentImage: {
         url: 'https://www.baidu.com/img/flexible/logo/pc/result.png'
@@ -80,3 +80,33 @@ export default {
   }
 }
 </script>
+
+<style>
+.message-text-container {
+  width: 300px;
+  background-color: #5daf34;
+  margin: 5px;
+}
+.message-text {
+  width: 70%;
+  max-width: 100%;
+  text-align: left;
+  margin-top: 5px;
+}
+.chat-container {
+  width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: yellow;
+}
+.received {
+  background-color: #e5e5ea;
+  float: left;
+}
+.sent {
+  background-color: #007bff;
+  color: white;
+  align-self: flex-end;
+  float: right;
+}
+</style>
