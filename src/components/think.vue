@@ -1,50 +1,53 @@
 <template>
-  <el-container>
-    <el-main>
-      <html>
-      <body>
-      <header>
-        <div class="logo">
-          <el-row>
-            <el-col :span="16">
-              <el-input v-model="search" placeholder="搜一搜" @input="handleInputChange"></el-input>
-            </el-col>
-            <el-col :span="6">
-              <el-button type="primary" size="small" @click="openDialog()" class="add_note">新增笔记</el-button>
-            </el-col>
-          </el-row>
-          <el-dialog title="新增笔记" :visible.sync="dialogVisible" width="80%">
-            <el-input autosize type="textarea" size="medium" v-model="addThink.content"
-                      placeholder="请输入笔记内容" class="text-input"></el-input>
-            <!-- 笔记类型下拉选择框 -->
-            <el-select v-model="addThink.type" placeholder="请选择笔记类型" class="select-box">
-              <el-option label="文本" value="text"></el-option>
-              <el-option label="单词" value="word"></el-option>
-              <el-option label="图片" value="image"></el-option>
-              <el-option label="语音" value="voice"></el-option>
-            </el-select>
-            <!-- 保存和取消按钮 -->
-            <span slot="footer" class="dialog-footer">
-                  <el-button @click="closeDialog">取消</el-button>
-                  <el-button @click="saveNote" type="primary" >保存</el-button>
-                </span>
-          </el-dialog>
+  <pull-refresh @refresh="refresh">
+    <el-container>
+      <el-main>
+        <html>
+        <body>
+        <header>
+          <div class="logo">
+            <el-row>
+              <el-col :span="16">
+                <el-input v-model="search" placeholder="搜一搜" @input="handleInputChange"></el-input>
+              </el-col>
+              <el-col :span="6">
+                <el-button type="primary" size="small" @click="openDialog()" class="add_note">新增笔记</el-button>
+              </el-col>
+            </el-row>
+            <el-dialog title="新增笔记" :visible.sync="dialogVisible" width="80%">
+              <el-input autosize type="textarea" size="medium" v-model="addThink.content"
+                        placeholder="请输入笔记内容" class="text-input"></el-input>
+              <!-- 笔记类型下拉选择框 -->
+              <el-select v-model="addThink.type" placeholder="请选择笔记类型" class="select-box">
+                <el-option label="文本" value="text"></el-option>
+                <el-option label="单词" value="word"></el-option>
+                <el-option label="图片" value="image"></el-option>
+                <el-option label="语音" value="voice"></el-option>
+              </el-select>
+              <!-- 保存和取消按钮 -->
+              <span slot="footer" class="dialog-footer">
+                    <el-button @click="closeDialog">取消</el-button>
+                    <el-button @click="saveNote" type="primary" >保存</el-button>
+                  </span>
+            </el-dialog>
+          </div>
+        </header>
+        <div class="memos">
+          <think-operation v-for="item in posts" v-bind:key="item.id" v-bind:think="item"></think-operation>
         </div>
-      </header>
-      <div class="memos">
-        <think-operation v-for="item in posts" v-bind:key="item.id" v-bind:think="item"></think-operation>
-      </div>
-      </body>
-      </html>
+        </body>
+        </html>
 
-    </el-main>
-  </el-container>
+      </el-main>
+    </el-container>
+  </pull-refresh>
 </template>
 <script>
 import 'viewerjs/dist/viewer.css'
 import Viewer from 'v-viewer'
 import Vue from 'vue'
 import thinkOperation from './thinkOperation.vue'
+import pullRefresh from './loading.vue'
 
 Viewer.setDefaults({
   // 需要配置的属性 注意属性并没有引号
@@ -55,7 +58,8 @@ Vue.use(Viewer)
 export default {
   name: 'think',
   components: {
-    thinkOperation
+    thinkOperation,
+    pullRefresh
   },
   data() {
     return {
@@ -80,6 +84,13 @@ export default {
     window.removeEventListener('scroll', this.handleScroll)
   },
   methods: {
+    refresh (done) {
+      setTimeout(() => {
+        done()
+        this.posts = []
+        this.loadPage(1)
+      }, 500)
+    },
     openDialog() {
       this.dialogVisible = true
     },
