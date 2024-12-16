@@ -1,5 +1,11 @@
 <template>
   <el-form ref="form" :model="form" label-width="80px">
+    <el-form-item label="totp">
+      <el-input type="input" size="medium" v-model="form.totpSecret" placeholder="secret"></el-input>
+      <el-input type="input" size="medium" v-model="form.totpCode"></el-input>
+      <el-button type="primary" @click="generateTotpCode()">生成</el-button>
+    </el-form-item>
+    <el-divider></el-divider>
     <el-form-item label="item/graphql参数转换">
       <el-button type="primary" @click="graphqlConvert()">转换</el-button>
       <el-input autosize type="textarea" size="medium" v-model="form.graphql"></el-input>
@@ -76,6 +82,8 @@ export default {
       sqlPlaceholder: ' [SQL] 2022/08/04 16:04:42 SELECT xxx ? ?; [1:"xxx" 2:"xxx" 3:1]',
       sqlPlaceholder2: 'SELECT joinGet(\'field_option_join\', \'name\', category) as category_name, count(category) as metric_06c9ik1ujxor_t7io3vthohi, groupUniqArray(category) as `category_` FROM default.project final WHERE team_uuid = ? AND status <> ? AND __deleted = ? AND category IS NOT NULL AND category <> ? GROUP BY joinGet(\'field_option_join\', \'name\', category) ORDER BY count(category) DESC LIMIT 500|[4yWq3dYW 2 0 ]|12.713367ms',
       form: {
+        totpSecret: '',
+        totpCode: '',
         graphql: '',
         sql: '',
         sqlRes: '',
@@ -108,6 +116,7 @@ export default {
     if (this.historyList.length > 0) {
       this.form.tpl = this.historyList[0]
     }
+    this.form.totpSecret = this.getSecret()
   },
   methods: {
     onSubmit(type, value) {
@@ -125,6 +134,31 @@ export default {
           }
         } else {
           this.$message('转换失败')
+        }
+      }).catch(function (error) {
+        // 请求失败处理
+        console.log(error)
+      })
+    },
+    setSecret(template) {
+      localStorage.setItem('totp_secret', template)
+    },
+    getSecret() {
+      return localStorage.getItem('totp_secret')
+    },
+    generateTotpCode() {
+      if (this.form.totpSecret.length <= 0) {
+        return
+      }
+      // http://task.xiaohuasheng.cc/api/totp?secret=UBVBIBDMZFWFSDLR
+      this.axios.get(process.env.BACKEND_HOST + '/api/totp?secret=' + this.form.totpSecret).then(data => {
+        console.log(data)
+        if (data.data.code) {
+          this.form.totpCode = data.data.code
+          // 把 secret 保存到 localstorage
+          this.setSecret(this.form.totpSecret)
+        } else {
+          this.$message('失败:' + data.data.error)
         }
       }).catch(function (error) {
         // 请求失败处理
