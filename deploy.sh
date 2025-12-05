@@ -7,10 +7,10 @@ npm run build
 tar -zcvf dist.tar.gz dist
 
 # 上传 dist.tar.gz 到服务器
-scp dist.tar.gz root@114.215.111.84:/usr/local/openresty/nginx/html/taskFrontend/
+scp -P 10022 dist.tar.gz root@114.215.111.84:/usr/local/openresty/nginx/html/taskFrontend/
 
 # 登录服务器，解压缩并替换旧版本
-ssh root@114.215.111.84 << EOF
+ssh -p 10022 root@114.215.111.84 << EOF
   cd /usr/local/openresty/nginx/html/taskFrontend/
   rm -rf dist.bak
   mv dist dist.bak
