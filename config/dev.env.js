@@ -4,5 +4,5 @@ const prodEnv = require('./prod.env')
 
 module.exports = merge(prodEnv, {
   NODE_ENV: '"development"',
-  BACKEND_HOST: '"http://localhost:9091"'
+  BACKEND_HOST: '"http://task.xiaohuasheng.cc"'
 })
