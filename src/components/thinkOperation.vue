@@ -83,6 +83,24 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
           </div>
         </div>
+        <div v-if="think.type === 'weight'" class="content">
+          <div class="weight-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>日期</th>
+                  <th>体重 (kg)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in parseWeightData(think.content)" :key="index">
+                  <td>{{ item.date }}</td>
+                  <td>{{ item.weight }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -105,6 +123,20 @@ export default {
       dialogVisible: false, // 控制弹窗显示/隐藏
       editedThink: {
         content: ''
+      }
+    }
+  },
+  computed: {
+    // 解析体重数据
+    parseWeightData() {
+      return (content) => {
+        try {
+          const data = JSON.parse(content)
+          return Array.isArray(data) ? data : []
+        } catch (e) {
+          console.error('解析体重数据失败:', e)
+          return []
+        }
       }
     }
   },
@@ -199,5 +231,43 @@ export default {
 .tools {
   float: left;
   margin-right: 0.5rem;
+}
+
+.weight-table {
+  margin-top: 10px;
+}
+
+.weight-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.weight-table thead {
+  background-color: #f5f7fa;
+}
+
+.weight-table th,
+.weight-table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.weight-table th {
+  font-weight: 600;
+  color: #606266;
+}
+
+.weight-table td {
+  color: #323232;
+}
+
+.weight-table tbody tr:hover {
+  background-color: #f5f7fa;
+}
+
+.weight-table tbody tr:last-child td {
+  border-bottom: none;
 }
 </style>
