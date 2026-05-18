@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import axios from 'axios'
 import Convert from '@/components/Convert'
 import WorkUtils from '@/components/WorkUtils'
 import post from '@/components/post'
 import think from '@/components/think'
+import thinkLogin from '@/components/thinkLogin'
 import taskList from '@/components/legwork/taskList'
 import acceptedTask from '@/components/legwork/acceptedTask'
 import issuedTask from '@/components/legwork/issuedTask'
@@ -19,7 +21,7 @@ import escTest from '@/components/escTest'
 Vue.use(Router)
 Vue.use(mavonEditor)
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -59,7 +61,16 @@ export default new Router({
       name: 'think',
       component: think,
       meta: {
-        title: 'Thinking'
+        title: 'Thinking',
+        requiresThinkAuth: true
+      }
+    },
+    {
+      path: '/think-login',
+      name: 'thinkLogin',
+      component: thinkLogin,
+      meta: {
+        title: 'Think 登录'
       }
     },
     {
@@ -120,3 +131,34 @@ export default new Router({
     }
   ]
 })
+
+function checkThinkAuth() {
+  return axios.get(process.env.BACKEND_HOST + '/api/think/auth', {
+    withCredentials: true
+  }).then((response) => {
+    return Boolean(response.data && response.data.data && response.data.data.logged_in)
+  }).catch(() => {
+    return false
+  })
+}
+
+router.beforeEach((to, from, next) => {
+  if (!to.matched.some(record => record.meta && record.meta.requiresThinkAuth)) {
+    next()
+    return
+  }
+  checkThinkAuth().then((loggedIn) => {
+    if (loggedIn) {
+      next()
+      return
+    }
+    next({
+      name: 'thinkLogin',
+      query: {
+        redirect: to.fullPath
+      }
+    })
+  })
+})
+
+export default router

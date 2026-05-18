@@ -16,6 +16,7 @@ Vue.use(VueAxios, axios)
 Vue.config.productionTip = false
 
 // 设置axios为form-data
+axios.defaults.withCredentials = true
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.transformRequest = [function (data) {
@@ -40,6 +41,20 @@ router.beforeEach((to, from, next) => {
     document.title = to.meta.title
   }
   next()
+})
+
+axios.interceptors.response.use((response) => {
+  return response
+}, (error) => {
+  if (error.response && error.response.status === 401 && router.currentRoute.name !== 'thinkLogin') {
+    router.replace({
+      name: 'thinkLogin',
+      query: {
+        redirect: router.currentRoute.fullPath
+      }
+    })
+  }
+  return Promise.reject(error)
 })
 
 /* eslint-disable no-new */

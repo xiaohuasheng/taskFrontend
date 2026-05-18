@@ -10,8 +10,11 @@
               <el-col :span="16">
                 <el-input v-model="search" placeholder="搜一搜" @input="handleInputChange"></el-input>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="4">
                 <el-button type="primary" size="small" @click="openDialog()" class="add_note">新增笔记</el-button>
+              </el-col>
+              <el-col :span="4">
+                <el-button plain size="small" @click="logout">退出</el-button>
               </el-col>
             </el-row>
             <el-dialog title="新增笔记" :visible.sync="dialogVisible" width="80%">
@@ -94,13 +97,24 @@ export default {
     openDialog() {
       this.dialogVisible = true
     },
+    logout() {
+      this.axios.delete(process.env.BACKEND_HOST + '/api/think/auth').then(() => {
+        this.$router.replace({
+          name: 'thinkLogin',
+          query: {
+            redirect: this.$route.fullPath
+          }
+        })
+      }).catch(() => {
+        this.$message.error('退出失败')
+      })
+    },
     closeDialog() {
       this.addThink.content = ''
       this.dialogVisible = false
     },
     saveNote() {
-      let authID = this.$route.query.id
-      this.axios.post(process.env.BACKEND_HOST + '/api/think?id=' + authID, {
+      this.axios.post(process.env.BACKEND_HOST + '/api/think', {
         content: this.addThink.content,
         type: this.addThink.type
       }).then(data => {
@@ -126,11 +140,10 @@ export default {
       this.loadPage(1)
     },
     loadPage(page) {
-      let thinkID = this.$route.query.id
       this.isLoading = true
       // search
       let search = this.search
-      this.axios.get(process.env.BACKEND_HOST + '/api/think?id=' + thinkID + '&page=' + page + '&search=' + search)
+      this.axios.get(process.env.BACKEND_HOST + '/api/think?page=' + page + '&search=' + search)
         .then(response => {
           if (response.data.code !== 0) {
             this.$message(response.data.msg)

@@ -184,9 +184,7 @@ export default {
     },
     updateThink(think) {
       console.log(think)
-      let authID = this.$route.query.id
-      this.axios.post(process.env.BACKEND_HOST + '/api/think?id=' +
-        authID + '&think_id=' + think.id, {
+      this.axios.post(process.env.BACKEND_HOST + '/api/think?think_id=' + think.id, {
         content: think.content
       }).then(data => {
         if (data.data.data) {
@@ -208,9 +206,7 @@ export default {
       let content = think.content.substring(0, 10)
       let r = confirm('确定要删除' + content + '吗?')
       if (r) {
-        let authID = this.$route.query.id
-        this.axios.delete(process.env.BACKEND_HOST + '/api/think?id=' +
-          authID + '&think_id=' + think.id).then(data => {
+        this.axios.delete(process.env.BACKEND_HOST + '/api/think?think_id=' + think.id).then(data => {
           if (data.data.data) {
             this.$message('删除成功')
           } else {
