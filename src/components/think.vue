@@ -6,17 +6,15 @@
         <body>
         <header>
           <div class="logo">
-            <el-row>
-              <el-col :span="16">
+            <div class="action-bar">
+              <div class="search-wrap">
                 <el-input v-model="search" placeholder="搜一搜" @input="handleInputChange"></el-input>
-              </el-col>
-              <el-col :span="4">
+              </div>
+              <div class="action-wrap">
                 <el-button type="primary" size="small" @click="openDialog()" class="add_note">新增笔记</el-button>
-              </el-col>
-              <el-col :span="4">
-                <el-button plain size="small" @click="logout">退出</el-button>
-              </el-col>
-            </el-row>
+                <el-button plain size="small" @click="logout" class="logout-btn">退出</el-button>
+              </div>
+            </div>
             <el-dialog title="新增笔记" :visible.sync="dialogVisible" width="80%">
               <el-input autosize type="textarea" size="medium" v-model="addThink.content"
                         placeholder="请输入笔记内容" class="text-input"></el-input>
@@ -232,6 +230,25 @@ html {
   font-size: 16px;
 }
 
+.action-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.search-wrap {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.action-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
 .memos {
   width: 23rem;
   margin: 0 auto;
@@ -377,7 +394,10 @@ html {
 }
 
 .add_note {
-  margin-left: 4px;
+  height: 2.4rem;
+}
+
+.logout-btn {
   height: 2.4rem;
 }
 
@@ -388,5 +408,20 @@ html {
 
 .text-input {
   margin-bottom: 10px; /* 调整输入框与下拉框的上下间距 */
+}
+
+@media (max-width: 768px) {
+  .action-bar {
+    flex-wrap: wrap;
+  }
+
+  .search-wrap {
+    flex-basis: 100%;
+  }
+
+  .action-wrap {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }
 </style>
